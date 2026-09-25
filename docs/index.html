@@ -5,22 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hoverfly — on-device AI models for Android</title>
 <meta name="description" content="On-device AI models for Android from Hoverfly: emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection. Plain Kotlin, no dependencies, no network.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%227%22 fill=%22%234f46e5%22/><ellipse cx=%228.3%22 cy=%2210.5%22 rx=%223.6%22 ry=%222.4%22 fill=%22%23fff%22 fill-opacity=%22.92%22 transform=%22rotate(-18 8.3 10.5)%22/><ellipse cx=%2215.7%22 cy=%2210.5%22 rx=%223.6%22 ry=%222.4%22 fill=%22%23fff%22 fill-opacity=%22.92%22 transform=%22rotate(18 15.7 10.5)%22/><circle cx=%2212%22 cy=%2213%22 r=%222.1%22 fill=%22%23fff%22/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect x=%221%22 y=%221%22 width=%2222%22 height=%2222%22 rx=%224%22 fill=%22%230a0b0d%22 stroke=%22%2322d3ee%22 stroke-width=%221.4%22/><circle cx=%2212%22 cy=%2212%22 r=%222.3%22 fill=%22%2322d3ee%22/><path d=%22M12 4.2v3M12 16.8v3M4.2 12h3M16.8 12h3%22 stroke=%22%2322d3ee%22 stroke-width=%221.4%22 stroke-linecap=%22round%22/></svg>">
 <style>
   :root {
-    --bg: #ffffff;
-    --bg-subtle: #f7f7f9;
-    --rail-bg: #f7f7f9;
-    --text: #1c1c1f;
-    --text-secondary: #6b6b73;
-    --border: #e2e2e6;
-    --accent: #4f46e5;
-    --accent-hover: #4338ca;
-    --accent-soft: #eeedfd;
-    --code-bg: #f7f7f9;
-    --code-text: #1c1c1f;
-    --card-bg: #ffffff;
-    --topbar-bg: rgba(255, 255, 255, 0.86);
+    --bg: #f4f5f7;
+    --panel: #ffffff;
+    --panel-2: #eceef1;
+    --border: #d9dce1;
+    --text: #14161a;
+    --text-dim: #5c626c;
+    --text-faint: #9298a2;
+    --signal: #0e7fa0;
+    --ok: #157a3d;
+    --ok-soft: #e3f6ea;
+    --warn: #92600a;
+    --grid-line: rgba(15, 20, 30, 0.05);
+    --code-bg: #ececef;
+    --code-text: #14161a;
+    --topbar-bg: rgba(244, 245, 247, 0.88);
     --syn-comment: #6e7781;
     --syn-keyword: #cf222e;
     --syn-string: #0a3069;
@@ -30,19 +32,21 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0b0b0d;
-      --bg-subtle: #161619;
-      --rail-bg: #141417;
-      --text: #f1f1f3;
-      --text-secondary: #9d9da5;
-      --border: #2b2b30;
-      --accent: #818cf8;
-      --accent-hover: #a5b4fc;
-      --accent-soft: #22213f;
-      --code-bg: #161619;
-      --code-text: #f1f1f3;
-      --card-bg: #161619;
-      --topbar-bg: rgba(11, 11, 13, 0.86);
+      --bg: #08090b;
+      --panel: #0d0f12;
+      --panel-2: #131519;
+      --border: #23262c;
+      --text: #eceef0;
+      --text-dim: #9298a3;
+      --text-faint: #565b64;
+      --signal: #22d3ee;
+      --ok: #34d399;
+      --ok-soft: #0e2620;
+      --warn: #fbbf24;
+      --grid-line: rgba(255, 255, 255, 0.045);
+      --code-bg: #0d0f12;
+      --code-text: #eceef0;
+      --topbar-bg: rgba(8, 9, 11, 0.88);
       --syn-comment: #8b949e;
       --syn-keyword: #ff7b72;
       --syn-string: #a5d6ff;
@@ -52,19 +56,21 @@
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0b0b0d;
-    --bg-subtle: #161619;
-    --rail-bg: #141417;
-    --text: #f1f1f3;
-    --text-secondary: #9d9da5;
-    --border: #2b2b30;
-    --accent: #818cf8;
-    --accent-hover: #a5b4fc;
-    --accent-soft: #22213f;
-    --code-bg: #161619;
-    --code-text: #f1f1f3;
-    --card-bg: #161619;
-    --topbar-bg: rgba(11, 11, 13, 0.86);
+    --bg: #08090b;
+    --panel: #0d0f12;
+    --panel-2: #131519;
+    --border: #23262c;
+    --text: #eceef0;
+    --text-dim: #9298a3;
+    --text-faint: #565b64;
+    --signal: #22d3ee;
+    --ok: #34d399;
+    --ok-soft: #0e2620;
+    --warn: #fbbf24;
+    --grid-line: rgba(255, 255, 255, 0.045);
+    --code-bg: #0d0f12;
+    --code-text: #eceef0;
+    --topbar-bg: rgba(8, 9, 11, 0.88);
     --syn-comment: #8b949e;
     --syn-keyword: #ff7b72;
     --syn-string: #a5d6ff;
@@ -77,124 +83,149 @@
   html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 28px 28px;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     line-height: 1.5;
   }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { color: var(--accent-hover); }
+  a { color: var(--signal); text-decoration: none; }
+  a:hover { text-decoration: underline; }
   button { font-family: inherit; }
+  .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
 
   /* Topbar */
   .topbar {
     position: sticky; top: 0; z-index: 200;
-    height: 52px; display: flex; align-items: center; justify-content: space-between;
-    padding: 0 18px;
+    height: 48px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
     background: var(--topbar-bg);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(160%) blur(16px);
+    -webkit-backdrop-filter: saturate(160%) blur(16px);
     border-bottom: 1px solid var(--border);
   }
-  .brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; color: var(--text); }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 12.5px; letter-spacing: 0.1em; color: var(--text); }
   .brand svg { flex: none; }
-  .topbar-links { display: flex; align-items: center; gap: 18px; font-size: 13px; color: var(--text-secondary); }
-  .topbar-links a:hover { color: var(--text); }
+  .topbar-right { display: flex; align-items: center; gap: 14px; font-size: 11px; letter-spacing: 0.03em; color: var(--text-faint); }
+  .topbar-right .div { width: 1px; height: 14px; background: var(--border); }
+  .topbar-right a { color: var(--signal); font-weight: 600; }
 
   /* Layout */
   .app { display: flex; align-items: flex-start; }
 
   /* Rail */
   .rail {
-    position: sticky; top: 52px;
+    position: sticky; top: 48px;
     width: 104px; flex: none;
-    height: calc(100vh - 52px);
+    height: calc(100vh - 48px);
     overflow-y: auto;
-    background: var(--rail-bg);
+    background: var(--panel);
     border-right: 1px solid var(--border);
-    padding: 18px 8px;
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 16px 0;
+    display: flex; flex-direction: column; align-items: stretch; gap: 2px;
   }
   .rail-item {
-    width: 100%; border: none; background: transparent; cursor: pointer;
+    border: none; background: transparent; cursor: pointer;
     display: flex; flex-direction: column; align-items: center; gap: 6px;
-    padding: 10px 4px; border-radius: 12px;
-    color: var(--text-secondary);
+    padding: 9px 4px; border-left: 2px solid transparent;
+    color: var(--text-dim);
   }
-  .rail-item:hover { background: var(--bg-subtle); color: var(--text); }
-  .rail-item.is-active { background: var(--accent-soft); color: var(--text); }
-  .rail-item .badge {
-    width: 38px; height: 38px; border-radius: 11px;
+  .rail-item:hover { background: var(--panel-2); }
+  .rail-item.is-active { border-left-color: var(--model-color); background: var(--panel-2); }
+  .rail-icon {
+    width: 32px; height: 32px; border-radius: 6px; flex: none;
+    border: 1px solid var(--border); background: var(--panel);
     display: flex; align-items: center; justify-content: center;
-    color: #fff; flex: none;
-    transition: transform 0.15s ease;
   }
-  .rail-item.is-active .badge { transform: scale(1.06); box-shadow: 0 0 0 2px var(--bg-subtle), 0 0 0 3.5px var(--model-color); }
-  .rail-item .badge svg { width: 20px; height: 20px; }
-  .rail-item .rail-label { font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; text-align: center; line-height: 1.2; }
-  .rail-item.is-active .rail-label { color: var(--accent); }
-  .rail-item.is-wip { opacity: 0.55; }
-  .rail-item .rail-tag {
-    font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
-    color: var(--text-secondary); margin-top: -2px;
+  .rail-item.is-active .rail-icon { border-color: var(--model-color); }
+  .rail-icon svg { width: 16px; height: 16px; }
+  .rail-label {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.03em; text-align: center; line-height: 1.3;
+  }
+  .rail-item.is-active .rail-label { color: var(--text); }
+  .rail-item.is-wip { opacity: 0.6; }
+  .rail-wip-tag {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 8px; font-weight: 700; letter-spacing: 0.03em; color: var(--text-faint); margin-top: -3px;
   }
 
   /* Stage */
   .stage { flex: 1; min-width: 0; }
-  .model { display: none; padding: 44px 24px 90px; max-width: 760px; margin: 0 auto; }
+  .model { display: none; padding: 40px 24px 90px; max-width: 720px; margin: 0 auto; }
   .model.is-active { display: block; }
 
-  .model-head { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
-  .model-badge {
-    width: 56px; height: 56px; border-radius: 16px; flex: none;
-    display: flex; align-items: center; justify-content: center; color: #fff;
-    background: var(--model-color);
+  .model-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
+  .model-icon {
+    width: 42px; height: 42px; border-radius: 8px; flex: none;
+    border: 1.5px solid var(--model-color); background: var(--panel);
+    display: flex; align-items: center; justify-content: center;
   }
-  .model-badge svg { width: 28px; height: 28px; }
-  .model-head h1 { font-size: clamp(26px, 4vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin: 0; }
-  .model-version { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
-  .model-tagline { font-size: 17px; color: var(--text-secondary); max-width: 620px; margin: 0 0 28px; }
+  .model-icon svg { width: 22px; height: 22px; }
+  .model-meta {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-faint); display: flex; align-items: center; gap: 7px; margin-bottom: 6px;
+  }
+  .model-meta .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--model-color); flex: none; }
+  .model-meta .status-ok { color: var(--ok); }
+  .model-meta .status-warn { color: var(--warn); }
+  .model-head h1 { font-size: clamp(24px, 4vw, 29px); font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+  .model-tagline { font-size: 15.5px; color: var(--text-dim); max-width: 600px; margin: 0 0 26px; }
 
   .wip-note {
-    background: var(--bg-subtle); border: 1px dashed var(--border); border-radius: 14px;
-    padding: 18px 20px; font-size: 14px; color: var(--text-secondary); margin-bottom: 28px;
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 18px; font-size: 13.5px; color: var(--text-dim); margin-bottom: 26px; line-height: 1.6;
   }
   .wip-note strong { color: var(--text); }
 
-  /* Stat row */
-  .stat-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 32px; }
-  .stat {
-    background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 14px;
-    padding: 16px 12px; text-align: center;
+  /* Telemetry / stats */
+  .stat-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-bottom: 30px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .stat { background: var(--panel); padding: 14px 8px; text-align: center; }
+  .stat .v { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 16px; font-weight: 700; color: var(--text); }
+  .stat .l { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-faint); margin-top: 5px; line-height: 1.3; }
+
+  h2.section-title {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-faint); margin: 28px 0 10px;
   }
-  .stat .v { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
-  .stat .l { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-top: 4px; line-height: 1.3; }
 
-  h2.section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin: 30px 0 12px; }
-
-  ul.feature-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-  ul.feature-list li { font-size: 14.5px; color: var(--text-secondary); line-height: 1.55; padding-left: 20px; position: relative; }
+  ul.feature-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+  ul.feature-list li { font-size: 14px; color: var(--text-dim); line-height: 1.55; padding-left: 16px; position: relative; }
   ul.feature-list li::before {
-    content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%;
+    content: ""; position: absolute; left: 0; top: 7px; width: 5px; height: 5px;
     background: var(--model-color);
   }
   ul.feature-list strong { color: var(--text); font-weight: 600; }
 
-  .two-col { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 20px; align-items: start; }
+  .two-col { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 18px; align-items: start; }
   @media (max-width: 620px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
 
-  .shot-frame {
-    border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--bg-subtle);
+  .shot-frame { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--panel); }
+  .shot-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 10px; border-bottom: 1px solid var(--border);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint);
   }
+  .shot-bar .rec { display: flex; align-items: center; gap: 5px; }
+  .shot-bar .rec::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--ok); }
   .shot-frame img { display: block; width: 100%; }
-  .shot-caption { font-size: 12.5px; color: var(--text-secondary); padding: 10px 14px; border-top: 1px solid var(--border); }
+  .shot-caption {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11.5px; color: var(--text-dim); padding: 9px 12px; border-top: 1px solid var(--border);
+  }
 
   /* Code blocks */
   pre {
     background: var(--code-bg); color: var(--code-text);
-    border-radius: 12px; padding: 16px 18px; overflow-x: auto;
-    font-size: 13px; line-height: 1.6; border: 1px solid var(--border);
+    border-radius: 6px; padding: 15px 16px; overflow-x: auto;
+    font-size: 12.5px; line-height: 1.6; border: 1px solid var(--border);
     margin: 0;
   }
   code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
@@ -207,54 +238,64 @@
   .hljs-variable, .hljs-attr, .hljs-params, .hljs-property { color: var(--code-text); }
   .hljs-meta { color: var(--syn-comment); }
 
-  .code-block { position: relative; margin-bottom: 14px; }
-  .code-block pre { padding-right: 62px; }
+  .code-block { position: relative; margin-bottom: 12px; }
+  .code-block pre { padding-right: 58px; }
   .copy-btn {
-    position: absolute; top: 9px; right: 9px;
-    background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px;
-    color: var(--text-secondary); font-size: 10.5px; font-weight: 600;
-    padding: 4px 8px; cursor: pointer;
+    position: absolute; top: 8px; right: 8px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 4px;
+    color: var(--text-faint); font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 4px 7px; cursor: pointer;
   }
-  .copy-btn:hover { color: var(--text); border-color: var(--text-secondary); }
-  .copy-btn.copied { color: var(--model-color); border-color: var(--model-color); }
+  .copy-btn:hover { color: var(--text); border-color: var(--text-faint); }
+  .copy-btn.copied { color: var(--ok); border-color: var(--ok); }
 
-  .install-line { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .install-line { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
   .tag-pill {
-    display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 9px;
-    border-radius: 980px; background: #d1f7dd; color: #0a6b2c;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 3px 8px; border: 1px solid var(--ok); border-radius: 4px; color: var(--ok);
   }
+  .tag-pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--ok); }
 
-  .link-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--border); }
-  .link-row a { font-size: 13.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+  .link-row { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border); }
+  .link-row a {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
 
   /* Footer */
-  footer {
-    border-top: 1px solid var(--border); padding: 36px 24px 60px; text-align: center;
-  }
+  footer { border-top: 1px solid var(--border); padding: 34px 24px 56px; text-align: center; }
   footer .foot-inner { max-width: 560px; margin: 0 auto; }
-  footer p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 0 0 10px; }
-  footer .foot-links { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; font-size: 12.5px; margin-top: 14px; }
-  footer .foot-links a { color: var(--text-secondary); }
-  footer .foot-links a:hover { color: var(--text); }
+  footer p { font-size: 12.5px; color: var(--text-dim); line-height: 1.7; margin: 0 0 10px; }
+  footer .foot-links {
+    display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 16px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  footer .foot-links a { color: var(--text-faint); }
+  footer .foot-links a:hover { color: var(--signal); }
 
   /* Mobile: rail becomes a horizontal strip */
   @media (max-width: 760px) {
     .app { flex-direction: column; }
     .rail {
-      position: sticky; top: 52px; width: 100%; height: auto;
+      position: sticky; top: 48px; width: 100%; height: auto;
       flex-direction: row; overflow-x: auto; overflow-y: hidden;
       border-right: none; border-bottom: 1px solid var(--border);
-      padding: 10px 8px; gap: 2px; justify-content: flex-start;
+      padding: 8px 8px; gap: 0; justify-content: flex-start;
       -ms-overflow-style: none; scrollbar-width: none;
     }
     .rail::-webkit-scrollbar { display: none; }
-    .rail-item { flex: none; width: 66px; padding: 6px 2px; }
-    .model { padding: 28px 18px 70px; }
-    .model-head { gap: 12px; }
-    .model-badge { width: 46px; height: 46px; border-radius: 13px; }
-    .model-badge svg { width: 22px; height: 22px; }
+    .rail-item { flex: none; width: 64px; padding: 6px 2px; border-left: none; border-top: 2px solid transparent; }
+    .rail-item.is-active { border-left-color: transparent; border-top-color: var(--model-color); }
+    .model { padding: 26px 18px 70px; }
+    .model-icon { width: 38px; height: 38px; }
+    .model-icon svg { width: 19px; height: 19px; }
     .stat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .topbar-links span.full { display: none; }
+    .topbar-right .label { display: none; }
   }
 </style>
 </head>
@@ -262,51 +303,53 @@
 
 <div class="topbar">
   <div class="brand">
-    <svg width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" rx="7" fill="var(--accent)"/><ellipse cx="8.3" cy="10.5" rx="3.6" ry="2.4" fill="#fff" fill-opacity=".92" transform="rotate(-18 8.3 10.5)"/><ellipse cx="15.7" cy="10.5" rx="3.6" ry="2.4" fill="#fff" fill-opacity=".92" transform="rotate(18 15.7 10.5)"/><circle cx="12" cy="13" r="2.1" fill="#fff"/></svg>
-    Hoverfly
+    <svg width="18" height="18" viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" rx="4" fill="none" stroke="var(--signal)" stroke-width="1.6"/><circle cx="12" cy="12" r="2.4" fill="var(--signal)"/><path d="M12 4.2v3M12 16.8v3M4.2 12h3M16.8 12h3" stroke="var(--signal)" stroke-width="1.6" stroke-linecap="round"/></svg>
+    HOVERFLY
   </div>
-  <div class="topbar-links">
-    <span class="full">On-device AI for Android</span>
-    <a href="https://github.com/rajumark" target="_blank" rel="noopener">GitHub ↗</a>
+  <div class="topbar-right">
+    <span class="mono label">6 MODELS · 5 SHIPPED · 1 WIP</span>
+    <span class="div"></span>
+    <a href="https://github.com/rajumark" target="_blank" rel="noopener" class="mono">GITHUB ↗</a>
   </div>
 </div>
 
 <div class="app">
   <nav class="rail" id="rail">
-    <button class="rail-item is-active" data-target="moji" style="--model-color:#d97706">
-      <span class="badge" style="background:#d97706"><svg viewBox="0 0 24 24" fill="none"><circle cx="8.6" cy="10" r="1.4" fill="#fff"/><circle cx="15.4" cy="10" r="1.4" fill="#fff"/><path d="M7.5 14.2c1 1.6 3 2.5 4.5 2.5s3.5-.9 4.5-2.5" stroke="#fff" stroke-width="1.7" stroke-linecap="round" fill="none"/></svg></span>
-      <span class="rail-label">Moji</span>
+    <button class="rail-item is-active" data-target="moji" style="--model-color:#c2622a">
+      <span class="rail-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="8.6" cy="10" r="1.3" fill="var(--model-color)"/><circle cx="15.4" cy="10" r="1.3" fill="var(--model-color)"/><path d="M7.5 14.2c1 1.6 3 2.5 4.5 2.5s3.5-.9 4.5-2.5" stroke="var(--model-color)" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg></span>
+      <span class="rail-label">MOJI</span>
     </button>
-    <button class="rail-item" data-target="beacon" style="--model-color:#0891b2">
-      <span class="badge" style="background:#0891b2"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="1.6" fill="#fff" stroke="none"/><path d="M8.5 8.3a5 5 0 0 1 7 0M6 5.8a9 9 0 0 1 12 0M8.5 15.7a5 5 0 0 0 7 0M6 18.2a9 9 0 0 0 12 0"/></svg></span>
-      <span class="rail-label">Beacon</span>
+    <button class="rail-item" data-target="beacon" style="--model-color:#0e7f96">
+      <span class="rail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="1.5" fill="var(--model-color)" stroke="none"/><path d="M8.5 8.3a5 5 0 0 1 7 0M6 5.8a9 9 0 0 1 12 0M8.5 15.7a5 5 0 0 0 7 0M6 18.2a9 9 0 0 0 12 0"/></svg></span>
+      <span class="rail-label">BEACON</span>
     </button>
-    <button class="rail-item" data-target="comma" style="--model-color:#475569">
-      <span class="badge" style="background:#475569"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 7c2.4 0 3.7 1.8 3.7 4.3 0 2.8-1.7 5.3-3.9 7.2"/></svg></span>
-      <span class="rail-label">Comma</span>
+    <button class="rail-item" data-target="comma" style="--model-color:#556274">
+      <span class="rail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 7c2.4 0 3.7 1.8 3.7 4.3 0 2.8-1.7 5.3-3.9 7.2"/></svg></span>
+      <span class="rail-label">COMMA</span>
     </button>
-    <button class="rail-item" data-target="comeback" style="--model-color:#16a34a">
-      <span class="badge" style="background:#16a34a"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-10.1 6.3L5 19l1.1-4.2A7 7 0 1 1 20 12Z"/><path d="M13.2 10.3 11 12.3l2.2 2"/></svg></span>
-      <span class="rail-label">Comeback</span>
+    <button class="rail-item" data-target="comeback" style="--model-color:#238049">
+      <span class="rail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-10.1 6.3L5 19l1.1-4.2A7 7 0 1 1 20 12Z"/><path d="M13.2 10.3 11 12.3l2.2 2"/></svg></span>
+      <span class="rail-label">COMEBACK</span>
     </button>
-    <button class="rail-item" data-target="gatekeeper" style="--model-color:#dc2626">
-      <span class="badge" style="background:#dc2626"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5.5 6v5.4c0 4.6 2.9 7.6 6.5 8.9 3.6-1.3 6.5-4.3 6.5-8.9V6L12 3.2Z"/></svg></span>
-      <span class="rail-label">Gatekeeper</span>
+    <button class="rail-item" data-target="gatekeeper" style="--model-color:#b8433a">
+      <span class="rail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5.5 6v5.4c0 4.6 2.9 7.6 6.5 8.9 3.6-1.3 6.5-4.3 6.5-8.9V6L12 3.2Z"/></svg></span>
+      <span class="rail-label">GATEKEEPER</span>
     </button>
-    <button class="rail-item is-wip" data-target="vocal" style="--model-color:#7c3aed">
-      <span class="badge" style="background:#7c3aed"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9.3" y="3.3" width="5.4" height="10" rx="2.7"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3M9.3 20.5h5.4"/></svg></span>
-      <span class="rail-label">Vocal</span>
-      <span class="rail-tag">Soon</span>
+    <button class="rail-item is-wip" data-target="vocal" style="--model-color:#7c5ec4">
+      <span class="rail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9.3" y="3.3" width="5.4" height="10" rx="2.7"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3M9.3 20.5h5.4"/></svg></span>
+      <span class="rail-label">VOCAL</span>
+      <span class="rail-wip-tag">[WIP]</span>
     </button>
   </nav>
 
   <main class="stage">
 
-    <section class="model is-active" id="moji" data-accent="moji" style="--model-color:#d97706">
+    <section class="model is-active" id="moji" data-accent="moji" style="--model-color:#c2622a">
       <div class="model-head">
-        <div class="model-badge" style="background:#d97706"><svg viewBox="0 0 24 24" fill="none"><circle cx="8.6" cy="10" r="1.6" fill="#fff"/><circle cx="15.4" cy="10" r="1.6" fill="#fff"/><path d="M7.5 14.2c1 1.8 3 2.8 4.5 2.8s3.5-1 4.5-2.8" stroke="#fff" stroke-width="1.9" stroke-linecap="round" fill="none"/></svg></div>
+        <div class="model-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="8.6" cy="10" r="1.5" fill="var(--model-color)"/><circle cx="15.4" cy="10" r="1.5" fill="var(--model-color)"/><path d="M7.5 14.2c1 1.8 3 2.8 4.5 2.8s3.5-1 4.5-2.8" stroke="var(--model-color)" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></div>
         <div>
-          <h1>Moji <span class="model-version">v1.1.0</span></h1>
+          <div class="model-meta"><span class="dot"></span>MOJI · v1.1.0 · <span class="status-ok">SHIPPED</span></div>
+          <h1>Moji</h1>
         </div>
       </div>
       <p class="model-tagline">On-device emoji suggestions for Android. Give it a task or a message and get back the emoji that fit, in 22+ languages.</p>
@@ -315,7 +358,7 @@
         <div class="stat"><div class="v">~0.5ms</div><div class="l">Per suggestion</div></div>
         <div class="stat"><div class="v">~5MB</div><div class="l">On-device</div></div>
         <div class="stat"><div class="v">22+</div><div class="l">Languages</div></div>
-        <div class="stat"><div class="v">1000</div><div class="l">Emoji vocabulary</div></div>
+        <div class="stat"><div class="v">1000</div><div class="l">Emoji vocab</div></div>
       </div>
 
       <div class="two-col">
@@ -331,13 +374,14 @@ Moji(context).use { moji ->
 }</code></pre>
           </div>
           <h2 class="section-title">Install</h2>
-          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="install-line"><span class="tag-pill">JitPack live</span></div>
           <div class="code-block">
             <button class="copy-btn" type="button">Copy</button>
             <pre><code class="language-kotlin">implementation("com.github.rajumark:moji:v1.1.0")</code></pre>
           </div>
         </div>
         <div class="shot-frame">
+          <div class="shot-bar"><span class="rec">CAPTURE</span><span>MOJI</span></div>
           <img src="screenshots/moji.png" alt="Moji sample app suggesting soccer-related emoji for Spanish text" loading="lazy">
           <div class="shot-caption">"Partido de fútbol esta noche" → ⚽ 🏈 🏀</div>
         </div>
@@ -356,18 +400,21 @@ Moji(context).use { moji ->
       </div>
     </section>
 
-    <section class="model" id="beacon" data-accent="beacon" style="--model-color:#0891b2">
+    <section class="model" id="beacon" data-accent="beacon" style="--model-color:#0e7f96">
       <div class="model-head">
-        <div class="model-badge" style="background:#0891b2"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="1.7" fill="#fff" stroke="none"/><path d="M8.5 8.3a5 5 0 0 1 7 0M6 5.8a9 9 0 0 1 12 0M8.5 15.7a5 5 0 0 0 7 0M6 18.2a9 9 0 0 0 12 0"/></svg></div>
-        <div><h1>Beacon <span class="model-version">v1.1.0</span></h1></div>
+        <div class="model-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="1.6" fill="var(--model-color)" stroke="none"/><path d="M8.5 8.3a5 5 0 0 1 7 0M6 5.8a9 9 0 0 1 12 0M8.5 15.7a5 5 0 0 0 7 0M6 18.2a9 9 0 0 0 12 0"/></svg></div>
+        <div>
+          <div class="model-meta"><span class="dot"></span>BEACON · v1.1.0 · <span class="status-ok">SHIPPED</span></div>
+          <h1>Beacon</h1>
+        </div>
       </div>
       <p class="model-tagline">On-device language detection for Android. Give it any text, even a two-word chat message, and it tells you the language and the script — including romanised Hinglish and Tanglish.</p>
 
       <div class="stat-row">
         <div class="stat"><div class="v">~0.08ms</div><div class="l">Per text</div></div>
         <div class="stat"><div class="v">~8.5MB</div><div class="l">On-device</div></div>
-        <div class="stat"><div class="v">211</div><div class="l">Language labels</div></div>
-        <div class="stat"><div class="v">98.5%</div><div class="l">FLORES-200 accuracy</div></div>
+        <div class="stat"><div class="v">211</div><div class="l">Labels</div></div>
+        <div class="stat"><div class="v">98.5%</div><div class="l">FLORES-200</div></div>
       </div>
 
       <div class="two-col">
@@ -383,13 +430,14 @@ Beacon(context).use { beacon ->
 }</code></pre>
           </div>
           <h2 class="section-title">Install</h2>
-          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="install-line"><span class="tag-pill">JitPack live</span></div>
           <div class="code-block">
             <button class="copy-btn" type="button">Copy</button>
             <pre><code class="language-kotlin">implementation("com.github.rajumark:beacon:v1.1.0")</code></pre>
           </div>
         </div>
         <div class="shot-frame">
+          <div class="shot-bar"><span class="rec">CAPTURE</span><span>BEACON</span></div>
           <img src="screenshots/beacon.png" alt="Beacon sample app detecting romanised Hindi (Hinglish)" loading="lazy">
           <div class="shot-caption">"Kal milte hain bhai" → hin_Latn</div>
         </div>
@@ -408,10 +456,13 @@ Beacon(context).use { beacon ->
       </div>
     </section>
 
-    <section class="model" id="comma" data-accent="comma" style="--model-color:#475569">
+    <section class="model" id="comma" data-accent="comma" style="--model-color:#556274">
       <div class="model-head">
-        <div class="model-badge" style="background:#475569"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 7c2.4 0 3.7 1.8 3.7 4.3 0 2.8-1.7 5.3-3.9 7.2"/></svg></div>
-        <div><h1>Comma <span class="model-version">v1.0.0</span></h1></div>
+        <div class="model-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 7c2.4 0 3.7 1.8 3.7 4.3 0 2.8-1.7 5.3-3.9 7.2"/></svg></div>
+        <div>
+          <div class="model-meta"><span class="dot"></span>COMMA · v1.0.0 · <span class="status-ok">SHIPPED</span></div>
+          <h1>Comma</h1>
+        </div>
       </div>
       <p class="model-tagline">On-device punctuation and capitalisation for Android. Turns voice-typed or unpunctuated text into readable sentences — commas, full stops, question marks and capitals.</p>
 
@@ -419,7 +470,7 @@ Beacon(context).use { beacon ->
         <div class="stat"><div class="v">~10ms</div><div class="l">Per message</div></div>
         <div class="stat"><div class="v">~7.8MB</div><div class="l">On-device</div></div>
         <div class="stat"><div class="v">20</div><div class="l">Languages</div></div>
-        <div class="stat"><div class="v">43%</div><div class="l">Messages fully correct</div></div>
+        <div class="stat"><div class="v">43%</div><div class="l">Fully correct</div></div>
       </div>
 
       <div class="two-col">
@@ -435,13 +486,14 @@ Comma(context).use { comma ->
 }</code></pre>
           </div>
           <h2 class="section-title">Install</h2>
-          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="install-line"><span class="tag-pill">JitPack live</span></div>
           <div class="code-block">
             <button class="copy-btn" type="button">Copy</button>
             <pre><code class="language-kotlin">implementation("com.github.rajumark:comma:v1.0.0")</code></pre>
           </div>
         </div>
         <div class="shot-frame">
+          <div class="shot-bar"><span class="rec">CAPTURE</span><span>COMMA</span></div>
           <img src="screenshots/comma.png" alt="Comma sample app restoring punctuation in Hindi" loading="lazy">
           <div class="shot-caption">"आप कैसे हैं मैं ठीक हूँ" → "आप कैसे हैं? मैं ठीक हूँ।"</div>
         </div>
@@ -460,18 +512,21 @@ Comma(context).use { comma ->
       </div>
     </section>
 
-    <section class="model" id="comeback" data-accent="comeback" style="--model-color:#16a34a">
+    <section class="model" id="comeback" data-accent="comeback" style="--model-color:#238049">
       <div class="model-head">
-        <div class="model-badge" style="background:#16a34a"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-10.1 6.3L5 19l1.1-4.2A7 7 0 1 1 20 12Z"/><path d="M13.2 10.3 11 12.3l2.2 2"/></svg></div>
-        <div><h1>Comeback <span class="model-version">v1.1.0</span></h1></div>
+        <div class="model-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-10.1 6.3L5 19l1.1-4.2A7 7 0 1 1 20 12Z"/><path d="M13.2 10.3 11 12.3l2.2 2"/></svg></div>
+        <div>
+          <div class="model-meta"><span class="dot"></span>COMEBACK · v1.1.0 · <span class="status-ok">SHIPPED</span></div>
+          <h1>Comeback</h1>
+        </div>
       </div>
       <p class="model-tagline">On-device smart replies for Android. Reads the message you received and suggests short replies to tap, like the reply chips in messaging apps.</p>
 
       <div class="stat-row">
         <div class="stat"><div class="v">~0.5ms</div><div class="l">Per message</div></div>
         <div class="stat"><div class="v">~5MB</div><div class="l">On-device</div></div>
-        <div class="stat"><div class="v">1,300</div><div class="l">Curated replies</div></div>
-        <div class="stat"><div class="v">63.6%</div><div class="l">Good reply in top 3</div></div>
+        <div class="stat"><div class="v">1,300</div><div class="l">Replies</div></div>
+        <div class="stat"><div class="v">63.6%</div><div class="l">Good top-3</div></div>
       </div>
 
       <div class="two-col">
@@ -487,13 +542,14 @@ Comeback(context).use { comeback ->
 }</code></pre>
           </div>
           <h2 class="section-title">Install</h2>
-          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="install-line"><span class="tag-pill">JitPack live</span></div>
           <div class="code-block">
             <button class="copy-btn" type="button">Copy</button>
             <pre><code class="language-kotlin">implementation("com.github.rajumark:comeback:v1.1.0")</code></pre>
           </div>
         </div>
         <div class="shot-frame">
+          <div class="shot-bar"><span class="rec">CAPTURE</span><span>COMEBACK</span></div>
           <img src="screenshots/comeback.png" alt="Comeback sample app suggesting reply chips for a thank-you message" loading="lazy">
           <div class="shot-caption">"Thanks for your help" → reply chips</div>
         </div>
@@ -512,18 +568,21 @@ Comeback(context).use { comeback ->
       </div>
     </section>
 
-    <section class="model" id="gatekeeper" data-accent="gatekeeper" style="--model-color:#dc2626">
+    <section class="model" id="gatekeeper" data-accent="gatekeeper" style="--model-color:#b8433a">
       <div class="model-head">
-        <div class="model-badge" style="background:#dc2626"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5.5 6v5.4c0 4.6 2.9 7.6 6.5 8.9 3.6-1.3 6.5-4.3 6.5-8.9V6L12 3.2Z"/></svg></div>
-        <div><h1>Gatekeeper <span class="model-version">v1.1.0</span></h1></div>
+        <div class="model-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5.5 6v5.4c0 4.6 2.9 7.6 6.5 8.9 3.6-1.3 6.5-4.3 6.5-8.9V6L12 3.2Z"/></svg></div>
+        <div>
+          <div class="model-meta"><span class="dot"></span>GATEKEEPER · v1.1.0 · <span class="status-ok">SHIPPED</span></div>
+          <h1>Gatekeeper</h1>
+        </div>
       </div>
       <p class="model-tagline">On-device toxic message detection for Android. Reads a chat message, comment or review and tells you whether it's abusive, offensive, hateful, threatening or sexual harassment.</p>
 
       <div class="stat-row">
         <div class="stat"><div class="v">~1ms</div><div class="l">Per message</div></div>
         <div class="stat"><div class="v">~4MB</div><div class="l">On-device</div></div>
-        <div class="stat"><div class="v">98.8%</div><div class="l">Everyday chat passes</div></div>
-        <div class="stat"><div class="v">5</div><div class="l">Toxicity categories</div></div>
+        <div class="stat"><div class="v">98.8%</div><div class="l">Chat passes</div></div>
+        <div class="stat"><div class="v">5</div><div class="l">Categories</div></div>
       </div>
 
       <div class="two-col">
@@ -539,13 +598,14 @@ Gatekeeper(context).use { gk ->
 }</code></pre>
           </div>
           <h2 class="section-title">Install</h2>
-          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="install-line"><span class="tag-pill">JitPack live</span></div>
           <div class="code-block">
             <button class="copy-btn" type="button">Copy</button>
             <pre><code class="language-kotlin">implementation("com.github.rajumark:gatekeeper:v1.1.0")</code></pre>
           </div>
         </div>
         <div class="shot-frame">
+          <div class="shot-bar"><span class="rec">CAPTURE</span><span>GATEKEEPER</span></div>
           <img src="screenshots/gatekeeper.png" alt="Gatekeeper sample app flagging a threatening message" loading="lazy">
           <div class="shot-caption">"tujhe jaan se maar dunga" → Threat</div>
         </div>
@@ -564,18 +624,21 @@ Gatekeeper(context).use { gk ->
       </div>
     </section>
 
-    <section class="model" id="vocal" data-accent="vocal" style="--model-color:#7c3aed">
+    <section class="model" id="vocal" data-accent="vocal" style="--model-color:#7c5ec4">
       <div class="model-head">
-        <div class="model-badge" style="background:#7c3aed"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9.3" y="3.3" width="5.4" height="10" rx="2.7"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3M9.3 20.5h5.4"/></svg></div>
-        <div><h1>Vocal</h1></div>
+        <div class="model-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--model-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9.3" y="3.3" width="5.4" height="10" rx="2.7"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3M9.3 20.5h5.4"/></svg></div>
+        <div>
+          <div class="model-meta"><span class="dot"></span>VOCAL · <span class="status-warn">WORK IN PROGRESS</span></div>
+          <h1>Vocal</h1>
+        </div>
       </div>
       <p class="model-tagline">On-device spoken language identification for Android. Tells which of 32 languages (14 South Asian) is being spoken, from a few seconds of audio.</p>
 
       <div class="wip-note">
-        <strong>Work in progress.</strong> Not published yet — no public API or bundled model. The audio front end
-        is built: 16 kHz mono audio → 64-band log-mel spectrogram frames (Hann window, 512-point FFT, HTK-mel
-        filterbank, silence trimming), plus a small WAV file reader. Same approach as the rest of the Hoverfly
-        library family once finished — plain Kotlin, no dependencies, no network.
+        <strong>Not published yet.</strong> No public API or bundled model. The audio front end is built: 16 kHz
+        mono audio → 64-band log-mel spectrogram frames (Hann window, 512-point FFT, HTK-mel filterbank, silence
+        trimming), plus a small WAV file reader. Same approach as the rest of the Hoverfly library family once
+        finished — plain Kotlin, no dependencies, no network.
       </div>
 
       <div class="link-row">
