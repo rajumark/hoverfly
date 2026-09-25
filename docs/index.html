@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hoverfly — on-device AI models for Android</title>
+<meta name="description" content="On-device AI models for Android from Hoverfly: emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection. Plain Kotlin, no dependencies, no network.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%227%22 fill=%22%234f46e5%22/><ellipse cx=%228.3%22 cy=%2210.5%22 rx=%223.6%22 ry=%222.4%22 fill=%22%23fff%22 fill-opacity=%22.92%22 transform=%22rotate(-18 8.3 10.5)%22/><ellipse cx=%2215.7%22 cy=%2210.5%22 rx=%223.6%22 ry=%222.4%22 fill=%22%23fff%22 fill-opacity=%22.92%22 transform=%22rotate(18 15.7 10.5)%22/><circle cx=%2212%22 cy=%2213%22 r=%222.1%22 fill=%22%23fff%22/></svg>">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f7f7f9;
+    --rail-bg: #f7f7f9;
+    --text: #1c1c1f;
+    --text-secondary: #6b6b73;
+    --border: #e2e2e6;
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-soft: #eeedfd;
+    --code-bg: #f7f7f9;
+    --code-text: #1c1c1f;
+    --card-bg: #ffffff;
+    --topbar-bg: rgba(255, 255, 255, 0.86);
+    --syn-comment: #6e7781;
+    --syn-keyword: #cf222e;
+    --syn-string: #0a3069;
+    --syn-number: #0550ae;
+    --syn-function: #8250df;
+    --syn-type: #953800;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b0b0d;
+      --bg-subtle: #161619;
+      --rail-bg: #141417;
+      --text: #f1f1f3;
+      --text-secondary: #9d9da5;
+      --border: #2b2b30;
+      --accent: #818cf8;
+      --accent-hover: #a5b4fc;
+      --accent-soft: #22213f;
+      --code-bg: #161619;
+      --code-text: #f1f1f3;
+      --card-bg: #161619;
+      --topbar-bg: rgba(11, 11, 13, 0.86);
+      --syn-comment: #8b949e;
+      --syn-keyword: #ff7b72;
+      --syn-string: #a5d6ff;
+      --syn-number: #79c0ff;
+      --syn-function: #d2a8ff;
+      --syn-type: #ffa657;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b0b0d;
+    --bg-subtle: #161619;
+    --rail-bg: #141417;
+    --text: #f1f1f3;
+    --text-secondary: #9d9da5;
+    --border: #2b2b30;
+    --accent: #818cf8;
+    --accent-hover: #a5b4fc;
+    --accent-soft: #22213f;
+    --code-bg: #161619;
+    --code-text: #f1f1f3;
+    --card-bg: #161619;
+    --topbar-bg: rgba(11, 11, 13, 0.86);
+    --syn-comment: #8b949e;
+    --syn-keyword: #ff7b72;
+    --syn-string: #a5d6ff;
+    --syn-number: #79c0ff;
+    --syn-function: #d2a8ff;
+    --syn-type: #ffa657;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  button { font-family: inherit; }
+
+  /* Topbar */
+  .topbar {
+    position: sticky; top: 0; z-index: 200;
+    height: 52px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px;
+    background: var(--topbar-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; color: var(--text); }
+  .brand svg { flex: none; }
+  .topbar-links { display: flex; align-items: center; gap: 18px; font-size: 13px; color: var(--text-secondary); }
+  .topbar-links a:hover { color: var(--text); }
+
+  /* Layout */
+  .app { display: flex; align-items: flex-start; }
+
+  /* Rail */
+  .rail {
+    position: sticky; top: 52px;
+    width: 104px; flex: none;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+    background: var(--rail-bg);
+    border-right: 1px solid var(--border);
+    padding: 18px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .rail-item {
+    width: 100%; border: none; background: transparent; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 10px 4px; border-radius: 12px;
+    color: var(--text-secondary);
+  }
+  .rail-item:hover { background: var(--bg-subtle); color: var(--text); }
+  .rail-item.is-active { background: var(--accent-soft); color: var(--text); }
+  .rail-item .badge {
+    width: 38px; height: 38px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; flex: none;
+    transition: transform 0.15s ease;
+  }
+  .rail-item.is-active .badge { transform: scale(1.06); box-shadow: 0 0 0 2px var(--bg-subtle), 0 0 0 3.5px var(--model-color); }
+  .rail-item .badge svg { width: 20px; height: 20px; }
+  .rail-item .rail-label { font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; text-align: center; line-height: 1.2; }
+  .rail-item.is-active .rail-label { color: var(--accent); }
+  .rail-item.is-wip { opacity: 0.55; }
+  .rail-item .rail-tag {
+    font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-secondary); margin-top: -2px;
+  }
+
+  /* Stage */
+  .stage { flex: 1; min-width: 0; }
+  .model { display: none; padding: 44px 24px 90px; max-width: 760px; margin: 0 auto; }
+  .model.is-active { display: block; }
+
+  .model-head { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+  .model-badge {
+    width: 56px; height: 56px; border-radius: 16px; flex: none;
+    display: flex; align-items: center; justify-content: center; color: #fff;
+    background: var(--model-color);
+  }
+  .model-badge svg { width: 28px; height: 28px; }
+  .model-head h1 { font-size: clamp(26px, 4vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+  .model-version { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+  .model-tagline { font-size: 17px; color: var(--text-secondary); max-width: 620px; margin: 0 0 28px; }
+
+  .wip-note {
+    background: var(--bg-subtle); border: 1px dashed var(--border); border-radius: 14px;
+    padding: 18px 20px; font-size: 14px; color: var(--text-secondary); margin-bottom: 28px;
+  }
+  .wip-note strong { color: var(--text); }
+
+  /* Stat row */
+  .stat-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .stat {
+    background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 12px; text-align: center;
+  }
+  .stat .v { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+  .stat .l { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-top: 4px; line-height: 1.3; }
+
+  h2.section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin: 30px 0 12px; }
+
+  ul.feature-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  ul.feature-list li { font-size: 14.5px; color: var(--text-secondary); line-height: 1.55; padding-left: 20px; position: relative; }
+  ul.feature-list li::before {
+    content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--model-color);
+  }
+  ul.feature-list strong { color: var(--text); font-weight: 600; }
+
+  .two-col { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 20px; align-items: start; }
+  @media (max-width: 620px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+
+  .shot-frame {
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--bg-subtle);
+  }
+  .shot-frame img { display: block; width: 100%; }
+  .shot-caption { font-size: 12.5px; color: var(--text-secondary); padding: 10px 14px; border-top: 1px solid var(--border); }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg); color: var(--code-text);
+    border-radius: 12px; padding: 16px 18px; overflow-x: auto;
+    font-size: 13px; line-height: 1.6; border: 1px solid var(--border);
+    margin: 0;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+  .hljs-comment, .hljs-quote { color: var(--syn-comment); font-style: italic; }
+  .hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-meta .hljs-keyword { color: var(--syn-keyword); }
+  .hljs-string, .hljs-doctag, .hljs-regexp { color: var(--syn-string); }
+  .hljs-number { color: var(--syn-number); }
+  .hljs-title, .hljs-title.function_, .hljs-title.class_ { color: var(--syn-function); }
+  .hljs-built_in, .hljs-type, .hljs-class { color: var(--syn-type); }
+  .hljs-variable, .hljs-attr, .hljs-params, .hljs-property { color: var(--code-text); }
+  .hljs-meta { color: var(--syn-comment); }
+
+  .code-block { position: relative; margin-bottom: 14px; }
+  .code-block pre { padding-right: 62px; }
+  .copy-btn {
+    position: absolute; top: 9px; right: 9px;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text-secondary); font-size: 10.5px; font-weight: 600;
+    padding: 4px 8px; cursor: pointer;
+  }
+  .copy-btn:hover { color: var(--text); border-color: var(--text-secondary); }
+  .copy-btn.copied { color: var(--model-color); border-color: var(--model-color); }
+
+  .install-line { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .tag-pill {
+    display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 9px;
+    border-radius: 980px; background: #d1f7dd; color: #0a6b2c;
+  }
+
+  .link-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .link-row a { font-size: 13.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border); padding: 36px 24px 60px; text-align: center;
+  }
+  footer .foot-inner { max-width: 560px; margin: 0 auto; }
+  footer p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 0 0 10px; }
+  footer .foot-links { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; font-size: 12.5px; margin-top: 14px; }
+  footer .foot-links a { color: var(--text-secondary); }
+  footer .foot-links a:hover { color: var(--text); }
+
+  /* Mobile: rail becomes a horizontal strip */
+  @media (max-width: 760px) {
+    .app { flex-direction: column; }
+    .rail {
+      position: sticky; top: 52px; width: 100%; height: auto;
+      flex-direction: row; overflow-x: auto; overflow-y: hidden;
+      border-right: none; border-bottom: 1px solid var(--border);
+      padding: 10px 8px; gap: 2px; justify-content: flex-start;
+      -ms-overflow-style: none; scrollbar-width: none;
+    }
+    .rail::-webkit-scrollbar { display: none; }
+    .rail-item { flex: none; width: 66px; padding: 6px 2px; }
+    .model { padding: 28px 18px 70px; }
+    .model-head { gap: 12px; }
+    .model-badge { width: 46px; height: 46px; border-radius: 13px; }
+    .model-badge svg { width: 22px; height: 22px; }
+    .stat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .topbar-links span.full { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <svg width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" rx="7" fill="var(--accent)"/><ellipse cx="8.3" cy="10.5" rx="3.6" ry="2.4" fill="#fff" fill-opacity=".92" transform="rotate(-18 8.3 10.5)"/><ellipse cx="15.7" cy="10.5" rx="3.6" ry="2.4" fill="#fff" fill-opacity=".92" transform="rotate(18 15.7 10.5)"/><circle cx="12" cy="13" r="2.1" fill="#fff"/></svg>
+    Hoverfly
+  </div>
+  <div class="topbar-links">
+    <span class="full">On-device AI for Android</span>
+    <a href="https://github.com/rajumark" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</div>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <button class="rail-item is-active" data-target="moji" style="--model-color:#d97706">
+      <span class="badge" style="background:#d97706"><svg viewBox="0 0 24 24" fill="none"><circle cx="8.6" cy="10" r="1.4" fill="#fff"/><circle cx="15.4" cy="10" r="1.4" fill="#fff"/><path d="M7.5 14.2c1 1.6 3 2.5 4.5 2.5s3.5-.9 4.5-2.5" stroke="#fff" stroke-width="1.7" stroke-linecap="round" fill="none"/></svg></span>
+      <span class="rail-label">Moji</span>
+    </button>
+    <button class="rail-item" data-target="beacon" style="--model-color:#0891b2">
+      <span class="badge" style="background:#0891b2"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="1.6" fill="#fff" stroke="none"/><path d="M8.5 8.3a5 5 0 0 1 7 0M6 5.8a9 9 0 0 1 12 0M8.5 15.7a5 5 0 0 0 7 0M6 18.2a9 9 0 0 0 12 0"/></svg></span>
+      <span class="rail-label">Beacon</span>
+    </button>
+    <button class="rail-item" data-target="comma" style="--model-color:#475569">
+      <span class="badge" style="background:#475569"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 7c2.4 0 3.7 1.8 3.7 4.3 0 2.8-1.7 5.3-3.9 7.2"/></svg></span>
+      <span class="rail-label">Comma</span>
+    </button>
+    <button class="rail-item" data-target="comeback" style="--model-color:#16a34a">
+      <span class="badge" style="background:#16a34a"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-10.1 6.3L5 19l1.1-4.2A7 7 0 1 1 20 12Z"/><path d="M13.2 10.3 11 12.3l2.2 2"/></svg></span>
+      <span class="rail-label">Comeback</span>
+    </button>
+    <button class="rail-item" data-target="gatekeeper" style="--model-color:#dc2626">
+      <span class="badge" style="background:#dc2626"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5.5 6v5.4c0 4.6 2.9 7.6 6.5 8.9 3.6-1.3 6.5-4.3 6.5-8.9V6L12 3.2Z"/></svg></span>
+      <span class="rail-label">Gatekeeper</span>
+    </button>
+    <button class="rail-item is-wip" data-target="vocal" style="--model-color:#7c3aed">
+      <span class="badge" style="background:#7c3aed"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9.3" y="3.3" width="5.4" height="10" rx="2.7"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3M9.3 20.5h5.4"/></svg></span>
+      <span class="rail-label">Vocal</span>
+      <span class="rail-tag">Soon</span>
+    </button>
+  </nav>
+
+  <main class="stage">
+
+    <section class="model is-active" id="moji" data-accent="moji" style="--model-color:#d97706">
+      <div class="model-head">
+        <div class="model-badge" style="background:#d97706"><svg viewBox="0 0 24 24" fill="none"><circle cx="8.6" cy="10" r="1.6" fill="#fff"/><circle cx="15.4" cy="10" r="1.6" fill="#fff"/><path d="M7.5 14.2c1 1.8 3 2.8 4.5 2.8s3.5-1 4.5-2.8" stroke="#fff" stroke-width="1.9" stroke-linecap="round" fill="none"/></svg></div>
+        <div>
+          <h1>Moji <span class="model-version">v1.1.0</span></h1>
+        </div>
+      </div>
+      <p class="model-tagline">On-device emoji suggestions for Android. Give it a task or a message and get back the emoji that fit, in 22+ languages.</p>
+
+      <div class="stat-row">
+        <div class="stat"><div class="v">~0.5ms</div><div class="l">Per suggestion</div></div>
+        <div class="stat"><div class="v">~5MB</div><div class="l">On-device</div></div>
+        <div class="stat"><div class="v">22+</div><div class="l">Languages</div></div>
+        <div class="stat"><div class="v">1000</div><div class="l">Emoji vocabulary</div></div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h2 class="section-title">Use</h2>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">import io.github.rajumark.hoverfly.moji.Moji
+
+Moji(context).use { moji ->
+    moji.suggestions("Pay my bills")
+    // 💰 💸 🧾 💵 💳 …
+}</code></pre>
+          </div>
+          <h2 class="section-title">Install</h2>
+          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">implementation("com.github.rajumark:moji:v1.1.0")</code></pre>
+          </div>
+        </div>
+        <div class="shot-frame">
+          <img src="screenshots/moji.png" alt="Moji sample app suggesting soccer-related emoji for Spanish text" loading="lazy">
+          <div class="shot-caption">"Partido de fútbol esta noche" → ⚽ 🏈 🏀</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Highlights</h2>
+      <ul class="feature-list">
+        <li><strong>No dependencies.</strong> Pure Kotlin inference — no ONNX Runtime, no TFLite, no native code.</li>
+        <li><strong>Private &amp; offline.</strong> The model ships inside the AAR. No network, no permission, no telemetry.</li>
+        <li><strong>Parity-tested.</strong> Top-1 and top-5 predictions match a Python reference implementation exactly on all 443 test vectors.</li>
+      </ul>
+
+      <div class="link-row">
+        <a href="https://rajumark.github.io/moji/" target="_blank" rel="noopener">Full docs ↗</a>
+        <a href="https://github.com/rajumark/moji" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </section>
+
+    <section class="model" id="beacon" data-accent="beacon" style="--model-color:#0891b2">
+      <div class="model-head">
+        <div class="model-badge" style="background:#0891b2"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="1.7" fill="#fff" stroke="none"/><path d="M8.5 8.3a5 5 0 0 1 7 0M6 5.8a9 9 0 0 1 12 0M8.5 15.7a5 5 0 0 0 7 0M6 18.2a9 9 0 0 0 12 0"/></svg></div>
+        <div><h1>Beacon <span class="model-version">v1.1.0</span></h1></div>
+      </div>
+      <p class="model-tagline">On-device language detection for Android. Give it any text, even a two-word chat message, and it tells you the language and the script — including romanised Hinglish and Tanglish.</p>
+
+      <div class="stat-row">
+        <div class="stat"><div class="v">~0.08ms</div><div class="l">Per text</div></div>
+        <div class="stat"><div class="v">~8.5MB</div><div class="l">On-device</div></div>
+        <div class="stat"><div class="v">211</div><div class="l">Language labels</div></div>
+        <div class="stat"><div class="v">98.5%</div><div class="l">FLORES-200 accuracy</div></div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h2 class="section-title">Use</h2>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">import io.github.rajumark.hoverfly.beacon.Beacon
+
+Beacon(context).use { beacon ->
+    beacon.detect("Kal milte hain bhai").label
+    // "hin_Latn"  Hindi (romanised)
+}</code></pre>
+          </div>
+          <h2 class="section-title">Install</h2>
+          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">implementation("com.github.rajumark:beacon:v1.1.0")</code></pre>
+          </div>
+        </div>
+        <div class="shot-frame">
+          <img src="screenshots/beacon.png" alt="Beacon sample app detecting romanised Hindi (Hinglish)" loading="lazy">
+          <div class="shot-caption">"Kal milte hain bhai" → hin_Latn</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Highlights</h2>
+      <ul class="feature-list">
+        <li><strong>211 labels.</strong> 195 language/script pairs, all 22 scheduled Indian languages, and 12 romanised South Asian languages.</li>
+        <li><strong>Strong on chat.</strong> 88.3% on hand-written chat messages vs. 71.3% for Google ML Kit Language ID on the same set.</li>
+        <li><strong>Private &amp; offline.</strong> No network, no permission, no telemetry.</li>
+      </ul>
+
+      <div class="link-row">
+        <a href="https://rajumark.github.io/beacon/" target="_blank" rel="noopener">Full docs ↗</a>
+        <a href="https://github.com/rajumark/beacon" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </section>
+
+    <section class="model" id="comma" data-accent="comma" style="--model-color:#475569">
+      <div class="model-head">
+        <div class="model-badge" style="background:#475569"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 7c2.4 0 3.7 1.8 3.7 4.3 0 2.8-1.7 5.3-3.9 7.2"/></svg></div>
+        <div><h1>Comma <span class="model-version">v1.0.0</span></h1></div>
+      </div>
+      <p class="model-tagline">On-device punctuation and capitalisation for Android. Turns voice-typed or unpunctuated text into readable sentences — commas, full stops, question marks and capitals.</p>
+
+      <div class="stat-row">
+        <div class="stat"><div class="v">~10ms</div><div class="l">Per message</div></div>
+        <div class="stat"><div class="v">~7.8MB</div><div class="l">On-device</div></div>
+        <div class="stat"><div class="v">20</div><div class="l">Languages</div></div>
+        <div class="stat"><div class="v">43%</div><div class="l">Messages fully correct</div></div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h2 class="section-title">Use</h2>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">import io.github.rajumark.hoverfly.comma.Comma
+
+Comma(context).use { comma ->
+    comma.restore("can you pick up the kids at 5 i am stuck in a meeting")
+    // "Can you pick up the kids at 5? I am stuck in a meeting."
+}</code></pre>
+          </div>
+          <h2 class="section-title">Install</h2>
+          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">implementation("com.github.rajumark:comma:v1.0.0")</code></pre>
+          </div>
+        </div>
+        <div class="shot-frame">
+          <img src="screenshots/comma.png" alt="Comma sample app restoring punctuation in Hindi" loading="lazy">
+          <div class="shot-caption">"आप कैसे हैं मैं ठीक हूँ" → "आप कैसे हैं? मैं ठीक हूँ।"</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Highlights</h2>
+      <ul class="feature-list">
+        <li><strong>Made for Indian text.</strong> English, Hinglish, Tanglish, Hindi, Bengali, Marathi, Gujarati, Punjabi, Tamil, Telugu, Kannada, Malayalam, Urdu, plus six European languages.</li>
+        <li><strong>Each script's own marks.</strong> A full stop is । in Hindi, Marathi, Bengali and Punjabi, and ۔ in Urdu.</li>
+        <li><strong>Long text handled.</strong> A whole voice note is processed in overlapping windows, so every word gets context on both sides.</li>
+      </ul>
+
+      <div class="link-row">
+        <a href="https://rajumark.github.io/comma/" target="_blank" rel="noopener">Full docs ↗</a>
+        <a href="https://github.com/rajumark/comma" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </section>
+
+    <section class="model" id="comeback" data-accent="comeback" style="--model-color:#16a34a">
+      <div class="model-head">
+        <div class="model-badge" style="background:#16a34a"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-10.1 6.3L5 19l1.1-4.2A7 7 0 1 1 20 12Z"/><path d="M13.2 10.3 11 12.3l2.2 2"/></svg></div>
+        <div><h1>Comeback <span class="model-version">v1.1.0</span></h1></div>
+      </div>
+      <p class="model-tagline">On-device smart replies for Android. Reads the message you received and suggests short replies to tap, like the reply chips in messaging apps.</p>
+
+      <div class="stat-row">
+        <div class="stat"><div class="v">~0.5ms</div><div class="l">Per message</div></div>
+        <div class="stat"><div class="v">~5MB</div><div class="l">On-device</div></div>
+        <div class="stat"><div class="v">1,300</div><div class="l">Curated replies</div></div>
+        <div class="stat"><div class="v">63.6%</div><div class="l">Good reply in top 3</div></div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h2 class="section-title">Use</h2>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">import io.github.rajumark.hoverfly.comeback.Comeback
+
+Comeback(context).use { comeback ->
+    comeback.replies("Thanks for your help")
+    // [No problem] [You're welcome] [Anytime]
+}</code></pre>
+          </div>
+          <h2 class="section-title">Install</h2>
+          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">implementation("com.github.rajumark:comeback:v1.1.0")</code></pre>
+          </div>
+        </div>
+        <div class="shot-frame">
+          <img src="screenshots/comeback.png" alt="Comeback sample app suggesting reply chips for a thank-you message" loading="lazy">
+          <div class="shot-caption">"Thanks for your help" → reply chips</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Highlights</h2>
+      <ul class="feature-list">
+        <li><strong>Safe by design.</strong> Replies are picked from a fixed, reviewed list, never generated — it can't write something rude or odd.</li>
+        <li><strong>Different chips.</strong> At most one reply per intent group, so the 3 chips mean different things.</li>
+        <li><strong>Small and fast.</strong> 4.6 MB and ~0.5 ms per message, versus 6.6 MB + 4.4 MB native libs and ~16.6 ms for Google ML Kit Smart Reply.</li>
+      </ul>
+
+      <div class="link-row">
+        <a href="https://rajumark.github.io/comeback/" target="_blank" rel="noopener">Full docs ↗</a>
+        <a href="https://github.com/rajumark/comeback" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </section>
+
+    <section class="model" id="gatekeeper" data-accent="gatekeeper" style="--model-color:#dc2626">
+      <div class="model-head">
+        <div class="model-badge" style="background:#dc2626"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5.5 6v5.4c0 4.6 2.9 7.6 6.5 8.9 3.6-1.3 6.5-4.3 6.5-8.9V6L12 3.2Z"/></svg></div>
+        <div><h1>Gatekeeper <span class="model-version">v1.1.0</span></h1></div>
+      </div>
+      <p class="model-tagline">On-device toxic message detection for Android. Reads a chat message, comment or review and tells you whether it's abusive, offensive, hateful, threatening or sexual harassment.</p>
+
+      <div class="stat-row">
+        <div class="stat"><div class="v">~1ms</div><div class="l">Per message</div></div>
+        <div class="stat"><div class="v">~4MB</div><div class="l">On-device</div></div>
+        <div class="stat"><div class="v">98.8%</div><div class="l">Everyday chat passes</div></div>
+        <div class="stat"><div class="v">5</div><div class="l">Toxicity categories</div></div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h2 class="section-title">Use</h2>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">import io.github.rajumark.hoverfly.gatekeeper.Gatekeeper
+
+Gatekeeper(context).use { gk ->
+    gk.check("tujhe jaan se maar dunga")
+    // Verdict(isToxic=true, score=0.98, topCategory=THREAT)
+}</code></pre>
+          </div>
+          <h2 class="section-title">Install</h2>
+          <div class="install-line"><span class="tag-pill">JitPack</span></div>
+          <div class="code-block">
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code class="language-kotlin">implementation("com.github.rajumark:gatekeeper:v1.1.0")</code></pre>
+          </div>
+        </div>
+        <div class="shot-frame">
+          <img src="screenshots/gatekeeper.png" alt="Gatekeeper sample app flagging a threatening message" loading="lazy">
+          <div class="shot-caption">"tujhe jaan se maar dunga" → Threat</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Highlights</h2>
+      <ul class="feature-list">
+        <li><strong>Made for Indian chat.</strong> Native Hindi, Tamil, Telugu, Malayalam and Kannada, romanised Hinglish and Tanglish, English, plus ~15 other languages.</li>
+        <li><strong>Few false alarms.</strong> 98.8% of everyday chat messages pass; slang stays clean.</li>
+        <li><strong>Tunable sensitivity.</strong> STRICT, BALANCED or RELAXED thresholds, or your own.</li>
+      </ul>
+
+      <div class="link-row">
+        <a href="https://rajumark.github.io/gatekeeper/" target="_blank" rel="noopener">Full docs ↗</a>
+        <a href="https://github.com/rajumark/gatekeeper" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </section>
+
+    <section class="model" id="vocal" data-accent="vocal" style="--model-color:#7c3aed">
+      <div class="model-head">
+        <div class="model-badge" style="background:#7c3aed"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9.3" y="3.3" width="5.4" height="10" rx="2.7"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3M9.3 20.5h5.4"/></svg></div>
+        <div><h1>Vocal</h1></div>
+      </div>
+      <p class="model-tagline">On-device spoken language identification for Android. Tells which of 32 languages (14 South Asian) is being spoken, from a few seconds of audio.</p>
+
+      <div class="wip-note">
+        <strong>Work in progress.</strong> Not published yet — no public API or bundled model. The audio front end
+        is built: 16 kHz mono audio → 64-band log-mel spectrogram frames (Hann window, 512-point FFT, HTK-mel
+        filterbank, silence trimming), plus a small WAV file reader. Same approach as the rest of the Hoverfly
+        library family once finished — plain Kotlin, no dependencies, no network.
+      </div>
+
+      <div class="link-row">
+        <a href="https://github.com/rajumark/moji" target="_blank" rel="noopener">See a shipped model (Moji) ↗</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <p>Every shipped model is free for products with up to 10,000 monthly active devices per platform under the Hoverfly Community License — no key, no account, no sign-up. Full terms are in each model's repository.</p>
+    <p>Questions, a commercial license, or a custom model for your language or task? <a href="mailto:raju348636@gmail.com">raju348636@gmail.com</a> or <a href="tel:+916353321951">+91 63533 21951</a> (call or WhatsApp).</p>
+    <div class="foot-links">
+      <a href="https://github.com/rajumark" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://rajumark.github.io/moji/" target="_blank" rel="noopener">Moji</a>
+      <a href="https://rajumark.github.io/beacon/" target="_blank" rel="noopener">Beacon</a>
+      <a href="https://rajumark.github.io/comma/" target="_blank" rel="noopener">Comma</a>
+      <a href="https://rajumark.github.io/comeback/" target="_blank" rel="noopener">Comeback</a>
+      <a href="https://rajumark.github.io/gatekeeper/" target="_blank" rel="noopener">Gatekeeper</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+<script>
+  if (window.hljs) { document.querySelectorAll('pre code[class*="language-"]').forEach(function (b) { hljs.highlightElement(b); }); }
+</script>
+
+<script>
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var code = btn.closest(".code-block").querySelector("pre code");
+      if (!code) return;
+      navigator.clipboard.writeText(code.textContent).then(function () {
+        var original = btn.textContent;
+        btn.textContent = "Copied";
+        btn.classList.add("copied");
+        window.setTimeout(function () { btn.textContent = original; btn.classList.remove("copied"); }, 1500);
+      });
+    });
+  });
+</script>
+
+<script>
+  (function () {
+    var rail = document.getElementById("rail");
+    var buttons = Array.prototype.slice.call(rail.querySelectorAll(".rail-item"));
+    var sections = Array.prototype.slice.call(document.querySelectorAll(".model"));
+    var valid = buttons.map(function (b) { return b.getAttribute("data-target"); });
+
+    function activate(id, push) {
+      if (valid.indexOf(id) === -1) return;
+      buttons.forEach(function (b) { b.classList.toggle("is-active", b.getAttribute("data-target") === id); });
+      sections.forEach(function (s) { s.classList.toggle("is-active", s.id === id); });
+      if (push !== false) { history.replaceState(null, "", "#" + id); }
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () { activate(b.getAttribute("data-target")); });
+    });
+
+    var initial = (location.hash || "").replace("#", "");
+    activate(valid.indexOf(initial) !== -1 ? initial : "moji", false);
+
+    window.addEventListener("hashchange", function () {
+      activate((location.hash || "").replace("#", ""), false);
+    });
+  })();
+</script>
+
+</body>
+</html>
