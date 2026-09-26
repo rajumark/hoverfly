@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hoverfly — on-device AI models for Android</title>
-<meta name="description" content="On-device AI models for Android from Hoverfly: emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection. Plain Kotlin, no dependencies, no network.">
+<meta name="description" content="On-device AI models for Android from Hoverfly: emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection, personal-info hiding and doodle recognition. Plain Kotlin, no dependencies, no network.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%228%22 fill=%22%2314140f%22/><circle cx=%2212%22 cy=%2212%22 r=%222.4%22 fill=%22%23d6ff4f%22/><path d=%22M12 4.5v3M12 16.5v3M4.5 12h3M16.5 12h3%22 stroke=%22%23d6ff4f%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/></svg>">
 <style>
   :root {
@@ -187,7 +187,7 @@
   <div class="wrap hero-grid">
     <div>
       <h1>On-device AI,<br>built to <span class="hl">hover&nbsp;close</span><br>to the metal.</h1>
-      <p>Hoverfly builds small, fast AI models for Android — emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection and more. Plain Kotlin, no dependencies, no network call, ever.</p>
+      <p>Hoverfly builds small, fast AI models for Android — emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection, personal-info hiding, doodle recognition and more. Plain Kotlin, no dependencies, no network call, ever.</p>
       <a class="btn" href="#models">Explore the models</a>
     </div>
     <div class="hero-visual">
@@ -210,7 +210,7 @@
   <div class="wrap">
     <div class="section-head">
       <div class="eyebrow">Models</div>
-      <p>Six on-device models for Android. Five are live today, one is in progress — each a small Kotlin library with no dependencies and no network call.</p>
+      <p>Seven on-device models for Android, all live today — each a small Kotlin library with no dependencies and no network call.</p>
     </div>
 
     <div class="model-grid">
@@ -269,16 +269,37 @@
         <a class="m-more" href="https://rajumark.github.io/gatekeeper/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
 
-      <div class="m-card dark wip">
+      <div class="m-card dark">
         <div class="m-top">
           <div>
-            <h3><span class="hl">Spoken</span> language ID</h3>
-            <div class="m-version">VOCAL</div>
-            <div class="wip-chip">Work in progress</div>
+            <h3><span class="hl">Personal info</span> hiding</h3>
+            <div class="m-version">HIDEOUT · v1.0.0</div>
           </div>
-          <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9.3" y="3.3" width="5.4" height="10" rx="2.7"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3M9.3 20.5h5.4"/></svg></div>
+          <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12s3-5.5 8.5-5.5S20.5 12 20.5 12s-3 5.5-8.5 5.5S3.5 12 3.5 12Z"/><circle cx="12" cy="12" r="2.2"/><path d="M5 19 19 5"/></svg></div>
         </div>
-        <a class="m-more" href="https://github.com/rajumark/moji" target="_blank" rel="noopener">See a shipped model <span class="arrow">↗</span></a>
+        <a class="m-more" href="https://rajumark.github.io/hideout/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
+      </div>
+
+      <div class="m-card dark">
+        <div class="m-top">
+          <div>
+            <h3><span class="hl">Doodle</span> recognition</h3>
+            <div class="m-version">CHALK · v1.0.0</div>
+          </div>
+          <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15c2-4.5 4-4.5 5 0s3 4.5 5 0 3.5-4.5 6-1"/></svg></div>
+        </div>
+        <a class="m-more" href="https://rajumark.github.io/chalk/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
+      </div>
+
+      <div class="m-card light">
+        <div class="m-top">
+          <div>
+            <h3><span class="hl">Your</span> model</h3>
+            <div class="m-version">CUSTOM · ON REQUEST</div>
+          </div>
+          <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+        </div>
+        <a class="m-more" href="mailto:raju348636@gmail.com?subject=Custom%20on-device%20model">Ask for one <span class="arrow">↗</span></a>
       </div>
     </div>
   </div>
@@ -325,6 +346,18 @@
         <p class="stat-text">Comeback's top 3 reply chips include a good one <strong>63.6%</strong> of the time, in <strong>4.6&nbsp;MB</strong> — versus 6.6 MB plus native libraries for Google ML Kit Smart Reply.</p>
         <a class="m-more" href="https://rajumark.github.io/comeback/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
+      <div class="r-card">
+        <p class="stat-text">On fresh hand-written Indian chat messages, Hideout hides <strong>96%</strong> of phone numbers, UPI IDs, Aadhaar, PAN and other personal details — versus <strong>64%</strong> for Microsoft Presidio — in <strong>8&nbsp;MB</strong>.</p>
+        <a class="m-more" href="https://rajumark.github.io/hideout/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
+      </div>
+      <div class="r-card">
+        <p class="stat-text">Chalk names a doodle right on the first guess <strong>81%</strong> of the time across 345 things, and in the top 3 <strong>94%</strong> — in <strong>1.8&nbsp;MB</strong>, 200× smaller than a BEiT image model that scores 83%.</p>
+        <a class="m-more" href="https://rajumark.github.io/chalk/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
+      </div>
+      <div class="r-card">
+        <p class="stat-text">On Hinglish chat, Comma places punctuation with an F1 of <strong>0.83</strong> — versus <strong>0.49</strong> for a 1.1&nbsp;GB XLM-R punctuation model — in <strong>7.8&nbsp;MB</strong>.</p>
+        <a class="m-more" href="https://rajumark.github.io/comma/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
+      </div>
     </div>
   </div>
 </section>
@@ -343,6 +376,8 @@
         <a href="https://rajumark.github.io/comma/" target="_blank" rel="noopener">Comma</a>
         <a href="https://rajumark.github.io/comeback/" target="_blank" rel="noopener">Comeback</a>
         <a href="https://rajumark.github.io/gatekeeper/" target="_blank" rel="noopener">Gatekeeper</a>
+        <a href="https://rajumark.github.io/hideout/" target="_blank" rel="noopener">Hideout</a>
+        <a href="https://rajumark.github.io/chalk/" target="_blank" rel="noopener">Chalk</a>
       </div>
     </div>
     <div class="foot-bottom">
