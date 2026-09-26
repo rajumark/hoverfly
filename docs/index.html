@@ -22,6 +22,28 @@
     --border-on-ink: rgba(244, 239, 231, 0.16);
     --radius-lg: 28px;
     --radius-md: 18px;
+    --header-bg: rgba(244, 239, 231, 0.86);
+    --art-bg: #f5f1e9;
+    --r-bg: #15140f;
+    --r-text: #f4efe7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --cream: #12110e; --cream-2: #1a1915; --panel: #1c1b17;
+      --ink: #f1ece3; --ink-2: #ddd7cb; --on-ink: #15140f; --on-ink-dim: #4a473f;
+      --text: #f1ece3; --text-dim: #a39f94;
+      --border: rgba(241, 236, 227, 0.12); --border-on-ink: rgba(241, 236, 227, 0.12);
+      --header-bg: rgba(18, 17, 14, 0.86); --art-bg: #25241e;
+      --r-bg: #1c1b17; --r-text: #f1ece3;
+    }
+  }
+  :root[data-theme="dark"] {
+    --cream: #12110e; --cream-2: #1a1915; --panel: #1c1b17;
+    --ink: #f1ece3; --ink-2: #ddd7cb; --on-ink: #15140f; --on-ink-dim: #4a473f;
+    --text: #f1ece3; --text-dim: #a39f94;
+    --border: rgba(241, 236, 227, 0.12); --border-on-ink: rgba(241, 236, 227, 0.12);
+    --header-bg: rgba(18, 17, 14, 0.86); --art-bg: #25241e;
+    --r-bg: #1c1b17; --r-text: #f1ece3;
   }
 
   * { box-sizing: border-box; }
@@ -39,21 +61,21 @@
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
 
   .hl {
-    background: var(--lime); padding: 1px 8px; border-radius: 8px;
+    background: var(--lime); color: #15140f; padding: 1px 8px; border-radius: 8px;
     box-decoration-break: clone; -webkit-box-decoration-break: clone;
   }
 
   /* Header */
   header.site {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(244, 239, 231, 0.86);
+    background: var(--header-bg);
     backdrop-filter: saturate(160%) blur(14px);
     -webkit-backdrop-filter: saturate(160%) blur(14px);
     border-bottom: 1px solid var(--border);
   }
   .site-inner { display: flex; align-items: center; justify-content: space-between; height: 62px; gap: 12px; }
   .logo { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 16px; letter-spacing: -0.01em; flex: none; }
-  .logo .mark { width: 26px; height: 26px; border-radius: 7px; background: var(--ink); display: flex; align-items: center; justify-content: center; flex: none; }
+  .logo .mark { width: 26px; height: 26px; border-radius: 7px; background: #15140f; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex: none; }
   .site-nav { display: flex; align-items: center; gap: 26px; flex: none; }
   .site-nav a.navlink { font-size: 13.5px; font-weight: 600; color: var(--text-dim); white-space: nowrap; }
   .site-nav a.navlink:hover { color: var(--text); }
@@ -95,7 +117,7 @@
   .section-head { display: flex; gap: 22px; align-items: flex-start; margin-bottom: 34px; flex-wrap: wrap; }
   .eyebrow {
     font-size: 26px; font-weight: 800; letter-spacing: -0.01em;
-    background: var(--lime); padding: 4px 14px; border-radius: 12px; flex: none;
+    background: var(--lime); color: #15140f; padding: 4px 14px; border-radius: 12px; flex: none;
     box-decoration-break: clone; -webkit-box-decoration-break: clone;
   }
   .section-head p { font-size: 14.5px; color: var(--text-dim); max-width: 380px; margin: 6px 0 0; line-height: 1.6; }
@@ -104,33 +126,79 @@
   .model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   @media (max-width: 620px) { .model-grid { grid-template-columns: 1fr; } }
   .m-card {
-    border-radius: var(--radius-lg); padding: 26px 24px; min-height: 190px;
-    display: flex; flex-direction: column; justify-content: space-between; gap: 24px;
-    border: 1px solid var(--border);
+    position: relative; border-radius: var(--radius-lg); padding: 24px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 20px;
+    background: var(--panel); color: var(--text); border: 1px solid var(--border);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   }
-  .m-card.light { background: var(--panel); }
-  .m-card.dark { background: var(--ink); color: var(--on-ink); border-color: var(--border-on-ink); }
-  .m-card.dark .hl { color: var(--ink); }
+  .m-card:hover { transform: translateY(-3px); border-color: var(--text-dim); box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.45); }
   .m-card .m-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
   .m-card h3 { font-size: 23px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; margin: 0; }
-  .m-card .m-version { font-size: 11px; font-weight: 600; opacity: 0.6; margin-top: 6px; }
+  .m-card .m-version { font-size: 11px; font-weight: 600; color: var(--text-dim); margin-top: 6px; letter-spacing: 0.02em; }
   .m-icon {
     width: 46px; height: 46px; border-radius: 50%; flex: none;
     display: flex; align-items: center; justify-content: center;
+    background: var(--ink); color: var(--on-ink);
   }
-  .m-card.light .m-icon { background: var(--ink); }
-  .m-card.dark .m-icon { background: var(--on-ink); }
-  .m-card.light .m-icon svg { stroke: var(--on-ink); }
-  .m-card.dark .m-icon svg { stroke: var(--ink); }
-  .m-card.wip { opacity: 0.7; }
-  .wip-chip {
-    display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.03em;
-    padding: 3px 9px; border-radius: 999px; border: 1px solid currentColor; opacity: 0.8; margin-top: 8px;
+  .m-icon svg { stroke: var(--on-ink); }
+
+  /* Card art: a tiny input -> output demo of what each model does */
+  .scene {
+    background: var(--art-bg); border-radius: 18px; padding: 16px; min-height: 108px;
+    display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 12px; line-height: 1.3;
+  }
+  .scene .flow { flex: none; color: var(--text-dim); transition: transform .2s ease; }
+  .m-card:hover .scene .flow { transform: translateX(3px); }
+  .scene .in, .scene .out { flex: 0 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 7px; align-items: flex-start; }
+  .scene .out.row { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .scene.rows { display: grid; grid-template-columns: auto auto auto; justify-content: center; gap: 7px 14px; align-items: center; }
+  .scene.rows .bub { justify-self: end; }
+  .scene.rows .tag { justify-self: start; }
+  .bub {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    border-radius: 13px 13px 13px 4px; padding: 6px 11px; font-weight: 600;
+    max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .bub.raw { color: var(--text-dim); font-weight: 500; }
+  .bub.dashed { border-style: dashed; background: transparent; color: var(--text-dim); }
+  .bub .pn { background: var(--lime); color: #15140f; border-radius: 4px; padding: 0 3px; margin: 0 1px; font-weight: 800; }
+  .redact { display: inline-block; width: 30px; height: 9px; border-radius: 3px; background: var(--text); opacity: 0.75; vertical-align: -1px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 5px 11px;
+    font-weight: 700; white-space: nowrap; background: var(--lime); color: #15140f; border: 1px solid transparent;
+  }
+  .chip.ghost { background: var(--panel); color: var(--text); border-color: var(--border); }
+  .chip.emo { width: 32px; height: 32px; padding: 0; justify-content: center; font-size: 15px; }
+  .tag {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.07em; border-radius: 6px; padding: 3px 7px;
+    background: var(--lime); color: #15140f; white-space: nowrap;
+  }
+  .tag.ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+  .canvas {
+    width: 72px; height: 72px; flex: none; border-radius: 12px; background: var(--panel);
+    border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; color: var(--text);
+  }
+  .guess { display: grid; grid-template-columns: 40px 90px 30px; gap: 8px; align-items: center; width: 100%; font-weight: 700; }
+  .guess .bar { height: 7px; border-radius: 99px; background: var(--border); overflow: hidden; }
+  .guess .bar i { display: block; height: 100%; border-radius: inherit; background: var(--lime); }
+  .guess.dim { color: var(--text-dim); font-weight: 600; }
+  .guess.dim .bar i { background: var(--text-dim); opacity: 0.5; }
+  .guess span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  @media (max-width: 460px) {
+    .scene:not(.rows) { flex-direction: column; align-items: stretch; }
+    .scene:not(.rows) .flow { transform: rotate(90deg); align-self: center; }
+    .m-card:hover .scene:not(.rows) .flow { transform: rotate(90deg) translateX(3px); }
+    .scene:not(.rows) .canvas { align-self: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .m-card, .scene .flow { transition: none; }
+    .m-card:hover { transform: none; }
   }
   .m-more {
     display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700;
     align-self: flex-start;
   }
+  .m-card .m-more::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
   .m-more .arrow {
     width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
     border: 1px solid currentColor; flex: none; font-size: 13px;
@@ -149,13 +217,13 @@
   .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   @media (max-width: 860px) { .result-grid { grid-template-columns: 1fr; } }
   .r-card {
-    background: var(--ink); color: var(--on-ink); border-radius: var(--radius-md);
+    background: var(--r-bg); color: var(--r-text); border-radius: var(--radius-md);
     padding: 26px 22px; display: flex; flex-direction: column; justify-content: space-between; gap: 22px;
     border: 1px solid var(--border-on-ink);
   }
-  .r-card p.stat-text { font-size: 14.5px; line-height: 1.65; margin: 0; color: var(--on-ink); }
+  .r-card p.stat-text { font-size: 14.5px; line-height: 1.65; margin: 0; color: var(--r-text); }
   .r-card p.stat-text strong { color: var(--lime); }
-  .r-card .m-more { color: var(--on-ink); }
+  .r-card .m-more { color: var(--r-text); }
 
   /* Footer */
   footer.site { border-top: 1px solid var(--border); padding: 48px 0 60px; margin-top: 20px; }
@@ -194,7 +262,7 @@
       <div class="hero-circle">
         <svg width="72" height="72" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" fill="none" stroke="var(--ink)" stroke-width="1.4"/><circle cx="12" cy="12" r="2.6" fill="var(--ink)"/><path d="M12 4.6v3.2M12 16.2v3.2M4.6 12h3.2M16.2 12h3.2" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round"/></svg>
         <span class="hero-badge b1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#15140f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4.5 4.5L19 8"/></svg></span>
-        <span class="hero-badge b2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f4efe7" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/></svg></span>
+        <span class="hero-badge b2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--on-ink)" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/></svg></span>
       </div>
     </div>
   </div>
@@ -214,7 +282,7 @@
     </div>
 
     <div class="model-grid">
-      <div class="m-card light">
+      <div class="m-card">
         <div class="m-top">
           <div>
             <h3><span class="hl">Emoji</span> suggestions</h3>
@@ -222,10 +290,11 @@
           </div>
           <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="8.6" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.4" cy="10" r="1.4" fill="currentColor" stroke="none"/><path d="M7.5 14.2c1 1.8 3 2.8 4.5 2.8s3.5-1 4.5-2.8" stroke-linecap="round"/></svg></div>
         </div>
+        <div class="scene" aria-hidden="true"><div class="in"><div class="bub">pizza tonight?</div></div><svg class="flow" width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h19M15 1l5 5-5 5"/></svg><div class="out row"><span class="chip emo">🍕</span><span class="chip emo ghost">😋</span><span class="chip emo ghost">🔥</span></div></div>
         <a class="m-more" href="https://rajumark.github.io/moji/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
 
-      <div class="m-card dark">
+      <div class="m-card">
         <div class="m-top">
           <div>
             <h3><span class="hl">Language</span> detection</h3>
@@ -233,10 +302,11 @@
           </div>
           <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><path d="M8.5 8.3a5 5 0 0 1 7 0M6 5.8a9 9 0 0 1 12 0M8.5 15.7a5 5 0 0 0 7 0M6 18.2a9 9 0 0 0 12 0"/></svg></div>
         </div>
+        <div class="scene rows" aria-hidden="true"><div class="bub">Bonjour à tous !</div><svg class="flow" width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h11M8.5 1.5 12 5 8.5 8.5"/></svg><span class="tag">FR</span><div class="bub">¿Qué tal, amigo?</div><svg class="flow" width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h11M8.5 1.5 12 5 8.5 8.5"/></svg><span class="tag">ES</span><div class="bub">kal milte hain</div><svg class="flow" width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h11M8.5 1.5 12 5 8.5 8.5"/></svg><span class="tag">HI</span></div>
         <a class="m-more" href="https://rajumark.github.io/beacon/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
 
-      <div class="m-card dark">
+      <div class="m-card">
         <div class="m-top">
           <div>
             <h3><span class="hl">Punctuation</span> restoration</h3>
@@ -244,10 +314,11 @@
           </div>
           <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 7c2.4 0 3.7 1.8 3.7 4.3 0 2.8-1.7 5.3-3.9 7.2"/></svg></div>
         </div>
+        <div class="scene" aria-hidden="true"><div class="in"><div class="bub raw">ok see you tmrw bye</div></div><svg class="flow" width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h19M15 1l5 5-5 5"/></svg><div class="out"><div class="bub">Ok<span class="pn">,</span> see you tmrw<span class="pn">.</span> Bye<span class="pn">!</span></div></div></div>
         <a class="m-more" href="https://rajumark.github.io/comma/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
 
-      <div class="m-card light">
+      <div class="m-card">
         <div class="m-top">
           <div>
             <h3><span class="hl">Smart</span> replies</h3>
@@ -255,10 +326,11 @@
           </div>
           <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-10.1 6.3L5 19l1.1-4.2A7 7 0 1 1 20 12Z"/><path d="M13.2 10.3 11 12.3l2.2 2"/></svg></div>
         </div>
+        <div class="scene" aria-hidden="true"><div class="in"><div class="bub">Lunch at 1?</div></div><svg class="flow" width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h19M15 1l5 5-5 5"/></svg><div class="out row"><span class="chip">Sure!</span><span class="chip ghost">Make it 2?</span><span class="chip ghost">👍</span></div></div>
         <a class="m-more" href="https://rajumark.github.io/comeback/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
 
-      <div class="m-card light">
+      <div class="m-card">
         <div class="m-top">
           <div>
             <h3><span class="hl">Toxicity</span> detection</h3>
@@ -266,10 +338,11 @@
           </div>
           <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5.5 6v5.4c0 4.6 2.9 7.6 6.5 8.9 3.6-1.3 6.5-4.3 6.5-8.9V6L12 3.2Z"/></svg></div>
         </div>
+        <div class="scene rows" aria-hidden="true"><div class="bub">gg, well played</div><svg class="flow" width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h11M8.5 1.5 12 5 8.5 8.5"/></svg><span class="tag ghost">✓ CLEAN</span><div class="bub">you're such a <span class="redact"></span></div><svg class="flow" width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h11M8.5 1.5 12 5 8.5 8.5"/></svg><span class="tag">⚑ TOXIC</span></div>
         <a class="m-more" href="https://rajumark.github.io/gatekeeper/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
 
-      <div class="m-card dark">
+      <div class="m-card">
         <div class="m-top">
           <div>
             <h3><span class="hl">Personal info</span> hiding</h3>
@@ -277,10 +350,11 @@
           </div>
           <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12s3-5.5 8.5-5.5S20.5 12 20.5 12s-3 5.5-8.5 5.5S3.5 12 3.5 12Z"/><circle cx="12" cy="12" r="2.2"/><path d="M5 19 19 5"/></svg></div>
         </div>
+        <div class="scene" aria-hidden="true"><div class="in"><div class="bub raw">UPI me: 98765 43210</div></div><svg class="flow" width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h19M15 1l5 5-5 5"/></svg><div class="out"><div class="bub">UPI me: <span class="tag">PHONE</span></div></div></div>
         <a class="m-more" href="https://rajumark.github.io/hideout/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
 
-      <div class="m-card dark">
+      <div class="m-card">
         <div class="m-top">
           <div>
             <h3><span class="hl">Doodle</span> recognition</h3>
@@ -288,10 +362,11 @@
           </div>
           <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15c2-4.5 4-4.5 5 0s3 4.5 5 0 3.5-4.5 6-1"/></svg></div>
         </div>
+        <div class="scene" aria-hidden="true"><div class="canvas"><svg width="46" height="46" viewBox="0 0 46 46" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 39.5 8.6 21.5 23.2 8.4l14.6 13.4.3 17.6"/><path d="M6.5 23.3 23 7.2l16.6 15.6"/><path d="M8.8 39.2c9.6.5 19.6.3 29.3.3"/><path d="M19.4 39.3V29.6c0-1.1 3.8-1.3 7.2-.2v9.8"/><path d="M29.6 20.2h4.6v4.2h-4.4z"/></svg></div><svg class="flow" width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h19M15 1l5 5-5 5"/></svg><div class="out"><div class="guess"><span>house</span><span class="bar"><i style="width:92%"></i></span><span>92%</span></div><div class="guess dim"><span>barn</span><span class="bar"><i style="width:5%"></i></span><span>5%</span></div><div class="guess dim"><span>tent</span><span class="bar"><i style="width:2%"></i></span><span>2%</span></div></div></div>
         <a class="m-more" href="https://rajumark.github.io/chalk/" target="_blank" rel="noopener">Learn more <span class="arrow">↗</span></a>
       </div>
 
-      <div class="m-card light">
+      <div class="m-card">
         <div class="m-top">
           <div>
             <h3><span class="hl">Your</span> model</h3>
@@ -299,6 +374,7 @@
           </div>
           <div class="m-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
         </div>
+        <div class="scene" aria-hidden="true"><div class="in"><div class="bub dashed">your task</div><div class="bub dashed">your data</div></div><svg class="flow" width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h19M15 1l5 5-5 5"/></svg><div class="out"><span class="chip">＋ your model</span><span class="tag ghost">OFFLINE · KOTLIN</span></div></div>
         <a class="m-more" href="mailto:raju348636@gmail.com?subject=Custom%20on-device%20model">Ask for one <span class="arrow">↗</span></a>
       </div>
     </div>
@@ -313,13 +389,13 @@
         <p>Add the dependency, call one function, get a result — no server, no API key, no account. Every model is Apache-2.0 up to version 1.0, and free for up to 10,000 monthly active devices after.</p>
         <a class="btn" href="https://github.com/rajumark" target="_blank" rel="noopener">View the code</a>
       </div>
-      <svg class="cta-graphic" viewBox="0 0 120 120" fill="none">
-        <ellipse cx="60" cy="60" rx="52" ry="22" stroke="#15140f" stroke-width="1.3" transform="rotate(20 60 60)"/>
-        <ellipse cx="60" cy="60" rx="52" ry="22" stroke="#15140f" stroke-width="1.3" transform="rotate(-20 60 60)"/>
-        <ellipse cx="60" cy="60" rx="52" ry="22" stroke="#15140f" stroke-width="1.3" transform="rotate(90 60 60)"/>
-        <circle cx="60" cy="60" r="10" fill="#15140f"/>
-        <circle cx="57" cy="58" r="1.6" fill="#f4efe7"/>
-        <circle cx="63" cy="58" r="1.6" fill="#f4efe7"/>
+      <svg class="cta-graphic" viewBox="0 0 120 120" fill="none" style="color: var(--text)">
+        <ellipse cx="60" cy="60" rx="52" ry="22" stroke="currentColor" stroke-width="1.3" transform="rotate(20 60 60)"/>
+        <ellipse cx="60" cy="60" rx="52" ry="22" stroke="currentColor" stroke-width="1.3" transform="rotate(-20 60 60)"/>
+        <ellipse cx="60" cy="60" rx="52" ry="22" stroke="currentColor" stroke-width="1.3" transform="rotate(90 60 60)"/>
+        <circle cx="60" cy="60" r="10" fill="currentColor"/>
+        <circle cx="57" cy="58" r="1.6" fill="var(--cream)"/>
+        <circle cx="63" cy="58" r="1.6" fill="var(--cream)"/>
         <rect x="20" y="94" width="12" height="12" rx="3" fill="#d7ff4e" transform="rotate(45 26 100)"/>
       </svg>
     </div>
