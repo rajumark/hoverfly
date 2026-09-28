@@ -145,13 +145,6 @@
   .hero .lede { font-size: clamp(18px, 2.2vw, 22px); color: var(--text); max-width: 640px; margin: 0 auto 32px; line-height: 1.55; }
   .hero .lede b { font-weight: 500; }
   .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-  .install-line {
-    margin-top: 28px; display: inline-flex; align-items: center; gap: 10px; max-width: 100%;
-    font: 13px/1 var(--mono); color: var(--text-dim);
-    border: 1px solid var(--border); border-radius: 12px; padding: 8px 8px 8px 16px; background: var(--surface);
-  }
-  .install-line code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
-  .install-line .copy { flex: none; }
 
   /* Hero panel: lime card with a dot grid, holding the phone demo */
   .hero-panel {
@@ -378,8 +371,7 @@
     font-size: 12.5px; font-weight: 500; padding: 6px 14px; cursor: pointer; display: inline-flex; gap: 5px; align-items: center;
   }
   .copy:hover { background: rgba(255, 255, 255, 0.16); }
-  .install-line .copy { color: var(--tonal-text); background: var(--tonal); }
-  .copy.done, .install-line .copy.done { background: #3ddc84; color: #073042; }
+  .copy.done { background: #3ddc84; color: #073042; }
   .code {
     color: #e8eaed; padding: 18px 22px 24px; margin: 0; min-height: 212px;
     font: 13px/1.8 var(--mono); overflow-x: auto;
@@ -508,7 +500,7 @@
       <a class="navlink" href="#models">Models</a>
       <a class="navlink" href="#start">Start</a>
       <a class="navlink" href="#results">Results</a>
-      <a class="text-link" href="https://github.com/rajumark" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="text-link" href="https://rajumark.github.io/" target="_blank" rel="noopener">Portfolio ↗</a>
     </nav>
   </div>
 </header>
@@ -524,7 +516,6 @@
         <a class="btn" href="#models">Explore 7 models →</a>
         <a class="btn ghost" href="#results">See the numbers</a>
       </div>
-      <div class="install-line"><code id="dep">implementation("com.github.rajumark:moji:v1.1.0")</code><button class="copy" type="button" data-copy="#dep">Copy</button></div>
     </div>
 
     <div class="hero-panel">
@@ -967,7 +958,6 @@ implementation(<span class="s">"com.github.rajumark:moji:v1.1.0"</span>)
     t.addEventListener("click", function () {
       tabs.forEach(function (x) { x.setAttribute("aria-selected", x === t); });
       document.getElementById("code").innerHTML = snippets[t.dataset.m];
-      document.getElementById("dep").textContent = 'implementation("com.github.rajumark:' + t.dataset.m + ':' + (/moji|beacon|comeback|gatekeeper/.test(t.dataset.m) ? "v1.1.0" : "v1.0.0") + '")';
     });
   });
 
