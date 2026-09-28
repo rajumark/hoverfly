@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hoverfly — on-device AI for Android</title>
-<meta name="description" content="Tiny Kotlin AI models that run inside the phone: emoji suggestions, smart replies, language detection, punctuation, toxicity detection, personal-info hiding and doodle recognition. Offline, private, no server.">
+<meta name="description" content="Tiny Kotlin AI models that run inside the phone: emoji suggestions, smart replies, language detection, punctuation, toxicity detection, personal-info hiding, emotion detection and doodle recognition. Offline, private, no server.">
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,18 +14,18 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hoverfly">
 <meta property="og:title" content="Hoverfly — on-device AI for Android">
-<meta property="og:description" content="7 tiny Kotlin models. Offline, private, 2–9 MB each. Up to 193× smaller than the alternatives.">
+<meta property="og:description" content="8 tiny Kotlin models. Offline, private, 2–9 MB each. Up to 193× smaller than the alternatives.">
 <meta property="og:url" content="https://rajumark.github.io/hoverfly/">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hoverfly — on-device AI for Android">
-<meta name="twitter:description" content="7 tiny Kotlin models. Offline, private, 2–9 MB each.">
+<meta name="twitter:description" content="8 tiny Kotlin models. Offline, private, 2–9 MB each.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%226%22 fill=%22%23073042%22/><ellipse cx=%227%22 cy=%2210.2%22 rx=%224.2%22 ry=%222.3%22 transform=%22rotate(-28 7 10.2)%22 fill=%22%23e8eaed%22 opacity=%22.85%22/><ellipse cx=%2217%22 cy=%2210.2%22 rx=%224.2%22 ry=%222.3%22 transform=%22rotate(28 17 10.2)%22 fill=%22%23e8eaed%22 opacity=%22.85%22/><circle cx=%2212%22 cy=%227%22 r=%221.9%22 fill=%22%233ddc84%22/><ellipse cx=%2212%22 cy=%2214.4%22 rx=%223.3%22 ry=%225.2%22 fill=%22%233ddc84%22/><path d=%22M9 12.9h6M9 16h6%22 stroke=%22%23073042%22 stroke-width=%221.3%22/></svg>">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareSourceCode",
   "name": "Hoverfly",
-  "description": "On-device AI models for Android in plain Kotlin: emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection, personal-info hiding and doodle recognition.",
+  "description": "On-device AI models for Android in plain Kotlin: emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection, personal-info hiding, emotion detection and doodle recognition.",
   "url": "https://rajumark.github.io/hoverfly/",
   "codeRepository": "https://github.com/rajumark/hoverfly",
   "programmingLanguage": "Kotlin",
@@ -266,6 +266,7 @@
     transition: transform .2s ease, box-shadow .2s ease, opacity .25s ease;
   }
   .m-card[hidden] { display: none; }
+  .model-grid > .m-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .m-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hi); }
   .m-head { display: flex; align-items: center; gap: 16px; }
   .m-head > div:nth-child(2) { flex: 1; min-width: 0; }
@@ -513,7 +514,7 @@
       <h1>Add AI to your app.<br>Skip the <span class="hl">server.</span></h1>
       <p class="lede">Tiny Kotlin models that run <b>inside the phone</b>. Offline. Private. Milliseconds.</p>
       <div class="hero-ctas">
-        <a class="btn" href="#models">Explore 7 models →</a>
+        <a class="btn" href="#models">Explore 8 models →</a>
         <a class="btn ghost" href="#results">See the numbers</a>
       </div>
     </div>
@@ -635,8 +636,8 @@
         <h2>One job each. <span class="hl">Done well.</span></h2>
       </div>
       <div class="filters" role="group" aria-label="Filter models">
-        <button class="filter" type="button" data-f="all" aria-pressed="true">All <span class="n">7</span></button>
-        <button class="filter" type="button" data-f="text" aria-pressed="false">Text <span class="n">4</span></button>
+        <button class="filter" type="button" data-f="all" aria-pressed="true">All <span class="n">8</span></button>
+        <button class="filter" type="button" data-f="text" aria-pressed="false">Text <span class="n">5</span></button>
         <button class="filter" type="button" data-f="safety" aria-pressed="false">Safety <span class="n">2</span></button>
         <button class="filter" type="button" data-f="vision" aria-pressed="false">Drawing <span class="n">1</span></button>
       </div>
@@ -691,7 +692,19 @@
         <div class="scene" aria-hidden="true"><div class="in"><div class="bub">Lunch at 1?</div></div><svg class="flow" width="22" height="12"><use href="#flow"/></svg><div class="out row"><span class="chip">Sure!</span><span class="chip ghost">Make it 2?</span><span class="chip ghost">👍</span></div></div>
       </article>
 
-      <article class="m-card reveal" data-cat="safety">
+      <article class="m-card reveal" data-cat="text">
+        <div class="m-head">
+          <div class="m-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 14.2c.9 1.3 2.1 1.9 3.5 1.9s2.6-.6 3.5-1.9"/><path d="M9 9.8h.01M15 9.8h.01"/></svg></div>
+          <div>
+            <h3><span class="hl">Emotion</span> detection</h3>
+            <div class="m-meta"><span class="pill strong">EMOTION</span><span class="pill">6.4 MB</span><span class="pill">28 emotions</span></div>
+          </div>
+          <a class="go cover" href="https://rajumark.github.io/emotion/" target="_blank" rel="noopener" aria-label="Emotion: emotion detection"><svg width="16" height="16"><use href="#arrow"/></svg></a>
+        </div>
+        <div class="scene" aria-hidden="true"><div class="in"><div class="bub">Exam tomorrow 😰</div></div><svg class="flow" width="22" height="12"><use href="#flow"/></svg><div class="out row"><span class="chip emo">😰</span><span class="tag">NERVOUSNESS</span></div></div>
+      </article>
+
+      <article class="m-card reveal" data-cat="safety" style="--rd:.08s">
         <div class="m-head">
           <div class="m-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 5.5 6v5.4c0 4.6 2.9 7.6 6.5 8.9 3.6-1.3 6.5-4.3 6.5-8.9V6L12 3.2Z"/><path d="m9.2 12 2 2 3.8-4"/></svg></div>
           <div>
@@ -703,7 +716,7 @@
         <div class="scene rows" aria-hidden="true"><div class="bub">gg, well played</div><svg class="flow" width="14" height="10"><use href="#flow-s"/></svg><span class="tag ghost">✓ CLEAN</span><div class="bub">you're such a <span class="redact"></span></div><svg class="flow" width="14" height="10"><use href="#flow-s"/></svg><span class="tag">⚑ TOXIC</span></div>
       </article>
 
-      <article class="m-card reveal" data-cat="safety" style="--rd:.08s">
+      <article class="m-card reveal" data-cat="safety">
         <div class="m-head">
           <div class="m-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12s3-5.5 8.5-5.5S20.5 12 20.5 12s-3 5.5-8.5 5.5S3.5 12 3.5 12Z"/><circle cx="12" cy="12" r="2.2"/><path d="M5 19 19 5"/></svg></div>
           <div>
@@ -715,7 +728,7 @@
         <div class="scene" aria-hidden="true"><div class="in"><div class="bub raw">UPI me: 98765 43210</div></div><svg class="flow" width="22" height="12"><use href="#flow"/></svg><div class="out"><div class="bub">UPI me: <span class="tag">PHONE</span></div></div></div>
       </article>
 
-      <article class="m-card reveal" data-cat="vision">
+      <article class="m-card reveal" data-cat="vision" style="--rd:.08s">
         <div class="m-head">
           <div class="m-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5 19.5 9.5 9 20H4v-5L14.5 4.5Z"/><path d="m12.5 6.5 5 5"/></svg></div>
           <div>
@@ -727,7 +740,7 @@
         <div class="scene" aria-hidden="true"><div class="canvas"><svg width="46" height="46" viewBox="0 0 46 46" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 39.5 8.6 21.5 23.2 8.4l14.6 13.4.3 17.6"/><path d="M6.5 23.3 23 7.2l16.6 15.6"/><path d="M8.8 39.2c9.6.5 19.6.3 29.3.3"/><path d="M19.4 39.3V29.6c0-1.1 3.8-1.3 7.2-.2v9.8"/><path d="M29.6 20.2h4.6v4.2h-4.4z"/></svg></div><svg class="flow" width="22" height="12"><use href="#flow"/></svg><div class="out"><div class="guess"><span>house</span><span class="bar"><i style="width:92%"></i></span><span>92%</span></div><div class="guess dim"><span>barn</span><span class="bar"><i style="width:5%"></i></span><span>5%</span></div><div class="guess dim"><span>tent</span><span class="bar"><i style="width:2%"></i></span><span>2%</span></div></div></div>
       </article>
 
-      <article class="m-card reveal" data-cat="all" style="--rd:.08s">
+      <article class="m-card reveal" data-cat="all">
         <div class="m-head">
           <div class="m-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
           <div>
@@ -769,6 +782,7 @@
           <button class="tab" role="tab" type="button" data-m="gatekeeper" aria-selected="false">Gatekeeper</button>
           <button class="tab" role="tab" type="button" data-m="hideout" aria-selected="false">Hideout</button>
           <button class="tab" role="tab" type="button" data-m="chalk" aria-selected="false">Chalk</button>
+          <button class="tab" role="tab" type="button" data-m="emotion" aria-selected="false">Emotion</button>
         </div>
         <div class="code-top"><span class="dots"><i></i><i></i><i></i></span><button class="copy" type="button" data-copy="#code">Copy</button></div>
 <pre class="code" id="code" role="tabpanel" aria-live="polite"><span class="c">// build.gradle.kts</span>
@@ -805,6 +819,7 @@ implementation(<span class="s">"com.github.rajumark:moji:v1.1.0"</span>)
         <div class="sh-row"><span class="who">Chalk<small>1.8 vs 348 MB</small></span><span class="sh-bars" aria-hidden="true"><i class="us" style="--w:0.5%"></i><i class="them" style="--w:31%"></i></span><span class="x">193×</span></div>
         <div class="sh-row"><span class="who">Gatekeeper<small>3.8 vs 711 MB</small></span><span class="sh-bars" aria-hidden="true"><i class="us" style="--w:0.3%"></i><i class="them" style="--w:63%"></i></span><span class="x">187×</span></div>
         <div class="sh-row"><span class="who">Comma<small>7.8 MB vs 1.1 GB</small></span><span class="sh-bars" aria-hidden="true"><i class="us" style="--w:0.7%"></i><i class="them" style="--w:100%"></i></span><span class="x">144×</span></div>
+        <div class="sh-row"><span class="who">Emotion<small>6.4 vs 499 MB</small></span><span class="sh-bars" aria-hidden="true"><i class="us" style="--w:0.6%"></i><i class="them" style="--w:45%"></i></span><span class="x">78×</span></div>
         <div class="sh-row"><span class="who">Hideout<small>8 vs 445 MB</small></span><span class="sh-bars" aria-hidden="true"><i class="us" style="--w:0.7%"></i><i class="them" style="--w:40%"></i></span><span class="x">56×</span></div>
         <div class="legend"><span><i style="background:var(--green)"></i>Hoverfly</span><span><i style="background:var(--rival)"></i>Alternative</span><span>Bars to scale</span></div>
       </div>
@@ -902,6 +917,7 @@ implementation(<span class="s">"com.github.rajumark:moji:v1.1.0"</span>)
         <a href="https://rajumark.github.io/gatekeeper/" target="_blank" rel="noopener">Gatekeeper</a>
         <a href="https://rajumark.github.io/hideout/" target="_blank" rel="noopener">Hideout</a>
         <a href="https://rajumark.github.io/chalk/" target="_blank" rel="noopener">Chalk</a>
+        <a href="https://rajumark.github.io/emotion/" target="_blank" rel="noopener">Emotion</a>
       </nav>
       </div>
     </div>
@@ -951,7 +967,8 @@ implementation(<span class="s">"com.github.rajumark:moji:v1.1.0"</span>)
     comeback: snip("Comeback", "v1.1.0", "comeback", "    comeback.replies(" + q("Thanks for your help") + ")\n    " + c("[You're welcome] [Anytime] …")),
     gatekeeper: snip("Gatekeeper", "v1.1.0", "gk", "    gk.isToxic(" + q("bhai tu toh kamaal hai") + ")  " + c("false")),
     hideout: snip("Hideout", "v1.0.0", "hideout", "    hideout.hide(" + q("UPI me: 98765 43210") + ")\n    " + c("\"UPI me: [PHONE]\"")),
-    chalk: snip("Chalk", "v1.0.0", "chalk", "    chalk.guess(strokes)\n    " + c("[house 0.89, barn 0.06, church 0.01]"))
+    chalk: snip("Chalk", "v1.0.0", "chalk", "    chalk.guess(strokes)\n    " + c("[house 0.89, barn 0.06, church 0.01]")),
+    emotion: snip("Emotion", "v1.0.0", "emotion", "    emotion.detect(" + q("Exam tomorrow and I remember nothing 😰") + ")\n    " + c("[nervousness 0.96] · NEGATIVE"))
   };
   var tabs = document.querySelectorAll(".tab");
   tabs.forEach(function (t) {
