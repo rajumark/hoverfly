@@ -7,7 +7,7 @@
 Tiny Kotlin models that run inside the phone: offline, private, and fast.
 
 [![Website](https://img.shields.io/badge/website-rajumark.github.io%2Fhoverfly-d7ff4e?style=flat-square&labelColor=15140f)](https://rajumark.github.io/hoverfly)
-![Models](https://img.shields.io/badge/models-7-d7ff4e?style=flat-square&labelColor=15140f)
+![Models](https://img.shields.io/badge/models-8-d7ff4e?style=flat-square&labelColor=15140f)
 ![Size](https://img.shields.io/badge/size-2--9%20MB-d7ff4e?style=flat-square&labelColor=15140f)
 ![Network](https://img.shields.io/badge/network%20calls-0-d7ff4e?style=flat-square&labelColor=15140f)
 ![minSdk](https://img.shields.io/badge/minSdk-21-d7ff4e?style=flat-square&labelColor=15140f)
@@ -25,6 +25,7 @@ Tiny Kotlin models that run inside the phone: offline, private, and fast.
 | 🛡️ | [**Gatekeeper**](https://rajumark.github.io/gatekeeper/) | Toxicity detection | 3.8 MB | **98.8%** of everyday chat passes clean |
 | 🙈 | [**Hideout**](https://rajumark.github.io/hideout/) | Personal-info hiding | 8 MB | **96%** Indian PII hidden · Presidio 64% |
 | 🎨 | [**Chalk**](https://rajumark.github.io/chalk/) | Doodle recognition | 1.8 MB | **81%** first guess, 345 things |
+| 😊 | [**Emotion**](https://rajumark.github.io/emotion/) | Emotion detection | 6.4 MB | **38%** top emotion on fresh chat · RoBERTa (499 MB) 36% |
 
 ## Three lines
 
