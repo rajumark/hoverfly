@@ -2,15 +2,15 @@
 
 # 🪰 Hoverfly
 
-**On-device AI for Android. Skip the server.**
+**On-device AI for Kotlin Multiplatform. Skip the server.**
 
-Tiny Kotlin models that run inside the phone: offline, private, and fast.
+Tiny Kotlin Multiplatform models that run inside your app on Android, iOS, macOS, JVM desktop, JavaScript and WebAssembly: offline, private, and fast.
 
 [![Website](https://img.shields.io/badge/website-rajumark.github.io%2Fhoverfly-d7ff4e?style=flat-square&labelColor=15140f)](https://rajumark.github.io/hoverfly)
 ![Models](https://img.shields.io/badge/models-8-d7ff4e?style=flat-square&labelColor=15140f)
 ![Size](https://img.shields.io/badge/size-2--9%20MB-d7ff4e?style=flat-square&labelColor=15140f)
 ![Network](https://img.shields.io/badge/network%20calls-0-d7ff4e?style=flat-square&labelColor=15140f)
-![minSdk](https://img.shields.io/badge/minSdk-21-d7ff4e?style=flat-square&labelColor=15140f)
+![Platforms](https://img.shields.io/badge/platforms-Android%20·%20iOS%20·%20desktop%20·%20web-d7ff4e?style=flat-square&labelColor=15140f)
 
 </div>
 
@@ -30,11 +30,11 @@ Tiny Kotlin models that run inside the phone: offline, private, and fast.
 ## Three lines
 
 ```kotlin
-// build.gradle.kts  (JitPack)
-implementation("com.github.rajumark:moji:v1.1.0")
+// build.gradle.kts: commonMain (Maven Central)
+implementation("io.github.rajumark:moji:2.0.0")
 
-// anywhere in your app
-Moji(context).use { moji ->
+// anywhere in your app: Android, iOS, macOS, JVM desktop, JS or Wasm
+Moji().use { moji ->
     moji.suggestions("Pay my bills")   // 💰 💸 🧾
 }
 ```
@@ -44,7 +44,7 @@ Moji(context).use { moji ->
 | | Cloud AI API | Hoverfly |
 |---|:---:|:---:|
 | Works offline | ❌ | ✅ |
-| Text stays on the phone | ❌ | ✅ |
+| Text stays on the device | ❌ | ✅ |
 | No server, no per-call bill | ❌ | ✅ |
 | Size vs best open alternative | — | up to **193× smaller** |
 

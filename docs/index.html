@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hoverfly — on-device AI for Android</title>
-<meta name="description" content="Tiny Kotlin AI models that run inside the phone: emoji suggestions, smart replies, language detection, punctuation, toxicity detection, personal-info hiding, emotion detection and doodle recognition. Offline, private, no server.">
+<title>Hoverfly — on-device AI for Kotlin Multiplatform</title>
+<meta name="description" content="Tiny Kotlin Multiplatform AI models that run inside your app on Android, iOS, desktop and the web: emoji suggestions, smart replies, language detection, punctuation, toxicity detection, personal-info hiding, emotion detection and doodle recognition. Offline, private, no server.">
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,11 +13,11 @@
 <link rel="canonical" href="https://rajumark.github.io/hoverfly/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hoverfly">
-<meta property="og:title" content="Hoverfly — on-device AI for Android">
+<meta property="og:title" content="Hoverfly — on-device AI for Kotlin Multiplatform">
 <meta property="og:description" content="8 tiny Kotlin models. Offline, private, 2–9 MB each. Up to 193× smaller than the alternatives.">
 <meta property="og:url" content="https://rajumark.github.io/hoverfly/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hoverfly — on-device AI for Android">
+<meta name="twitter:title" content="Hoverfly — on-device AI for Kotlin Multiplatform">
 <meta name="twitter:description" content="8 tiny Kotlin models. Offline, private, 2–9 MB each.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%226%22 fill=%22%23073042%22/><ellipse cx=%227%22 cy=%2210.2%22 rx=%224.2%22 ry=%222.3%22 transform=%22rotate(-28 7 10.2)%22 fill=%22%23e8eaed%22 opacity=%22.85%22/><ellipse cx=%2217%22 cy=%2210.2%22 rx=%224.2%22 ry=%222.3%22 transform=%22rotate(28 17 10.2)%22 fill=%22%23e8eaed%22 opacity=%22.85%22/><circle cx=%2212%22 cy=%227%22 r=%221.9%22 fill=%22%233ddc84%22/><ellipse cx=%2212%22 cy=%2214.4%22 rx=%223.3%22 ry=%225.2%22 fill=%22%233ddc84%22/><path d=%22M9 12.9h6M9 16h6%22 stroke=%22%23073042%22 stroke-width=%221.3%22/></svg>">
 <script type="application/ld+json">
@@ -25,11 +25,11 @@
   "@context": "https://schema.org",
   "@type": "SoftwareSourceCode",
   "name": "Hoverfly",
-  "description": "On-device AI models for Android in plain Kotlin: emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection, personal-info hiding, emotion detection and doodle recognition.",
+  "description": "On-device AI models for Kotlin Multiplatform (Android, iOS, macOS, JVM desktop, JavaScript, WebAssembly) in plain Kotlin: emoji suggestions, language detection, punctuation restoration, smart replies, toxicity detection, personal-info hiding, emotion detection and doodle recognition.",
   "url": "https://rajumark.github.io/hoverfly/",
   "codeRepository": "https://github.com/rajumark/hoverfly",
   "programmingLanguage": "Kotlin",
-  "runtimePlatform": "Android",
+  "runtimePlatform": ["Android", "iOS", "macOS", "JVM", "JavaScript", "WebAssembly"],
   "author": { "@type": "Person", "name": "Raju", "url": "https://rajumark.github.io/" }
 }
 </script>
@@ -505,7 +505,7 @@
   <div class="wrap">
     <div class="hero-copy">
       <h1>Add AI to your app.<br>Skip the <span class="hl">server.</span></h1>
-      <p class="lede">Tiny Kotlin models that run <b>inside the phone</b>. Offline. Private. Milliseconds.</p>
+      <p class="lede">Tiny Kotlin Multiplatform models that run <b>inside your app</b>, on Android, iOS, desktop and the web. Offline. Private. Milliseconds.</p>
     </div>
 
     <div class="hero-panel">
@@ -756,7 +756,7 @@
       <div>
         <h2>Zero to AI in <span class="hl">three lines</span></h2>
         <ol class="steps">
-          <li><span class="sn">1</span><span>Add the dependency<small>JitPack · minSdk 21</small></span></li>
+          <li><span class="sn">1</span><span>Add the dependency<small>Maven Central · Android, iOS, desktop, web</small></span></li>
           <li><span class="sn">2</span><span>Create the model<small>once, off the main thread</small></span></li>
           <li><span class="sn">3</span><span>Call it<small>no key, no sign-up, no server</small></span></li>
         </ol>
@@ -774,11 +774,11 @@
           <button class="tab" role="tab" type="button" data-m="emotion" aria-selected="false">Emotion</button>
         </div>
         <div class="code-top"><span class="dots"><i></i><i></i><i></i></span><button class="copy" type="button" data-copy="#code">Copy</button></div>
-<pre class="code" id="code" role="tabpanel" aria-live="polite"><span class="c">// build.gradle.kts</span>
-implementation(<span class="s">"com.github.rajumark:moji:v1.1.0"</span>)
+<pre class="code" id="code" role="tabpanel" aria-live="polite"><span class="c">// build.gradle.kts: commonMain</span>
+implementation(<span class="s">"io.github.rajumark:moji:2.0.0"</span>)
 
 <span class="c">// anywhere in your app</span>
-<span class="k">Moji</span>(context).use { moji <span class="k">-></span>
+<span class="k">Moji</span>().use { moji <span class="k">-></span>
     moji.suggestions(<span class="s">"Pay my bills"</span>)  <span class="c">// 💰 💸 🧾</span>
 }</pre>
       </div>
@@ -964,18 +964,18 @@ implementation(<span class="s">"com.github.rajumark:moji:v1.1.0"</span>)
   var c = function (s) { return '<span class="c">// ' + s + '</span>'; };
   var k = function (s) { return '<span class="k">' + s + '</span>'; };
   var snip = function (name, ver, v, body) {
-    return c("build.gradle.kts") + "\nimplementation(" + q("com.github.rajumark:" + name.toLowerCase() + ":" + ver) + ")\n\n" +
-      c("anywhere in your app") + "\n" + k(name) + "(context).use { " + v + " " + k("->") + "\n" + body + "\n}";
+    return c("build.gradle.kts: commonMain") + "\nimplementation(" + q("io.github.rajumark:" + name.toLowerCase() + ":" + ver) + ")\n\n" +
+      c("anywhere in your app") + "\n" + k(name) + "().use { " + v + " " + k("->") + "\n" + body + "\n}";
   };
   var snippets = {
-    moji: snip("Moji", "v1.1.0", "moji", "    moji.suggestions(" + q("Pay my bills") + ")  " + c("💰 💸 🧾")),
-    beacon: snip("Beacon", "v1.1.0", "beacon", "    beacon.detect(" + q("Kal milte hain bhai") + ").label\n    " + c("\"hin_Latn\" · Hindi (romanised)")),
-    comma: snip("Comma", "v1.0.0", "comma", "    comma.restore(" + q("ok see you tmrw bye") + ")\n    " + c("\"Ok, see you tmrw. Bye!\"")),
-    comeback: snip("Comeback", "v1.1.0", "comeback", "    comeback.replies(" + q("Thanks for your help") + ")\n    " + c("[You're welcome] [Anytime] …")),
-    gatekeeper: snip("Gatekeeper", "v1.1.0", "gk", "    gk.isToxic(" + q("bhai tu toh kamaal hai") + ")  " + c("false")),
-    hideout: snip("Hideout", "v1.0.0", "hideout", "    hideout.hide(" + q("UPI me: 98765 43210") + ")\n    " + c("\"UPI me: [PHONE]\"")),
-    chalk: snip("Chalk", "v1.0.0", "chalk", "    chalk.guess(strokes)\n    " + c("[house 0.89, barn 0.06, church 0.01]")),
-    emotion: snip("Emotion", "v1.0.0", "emotion", "    emotion.detect(" + q("Exam tomorrow and I remember nothing 😰") + ")\n    " + c("[nervousness 0.96] · NEGATIVE"))
+    moji: snip("Moji", "2.0.0", "moji", "    moji.suggestions(" + q("Pay my bills") + ")  " + c("💰 💸 🧾")),
+    beacon: snip("Beacon", "2.0.0", "beacon", "    beacon.detect(" + q("Kal milte hain bhai") + ").label\n    " + c("\"hin_Latn\" · Hindi (romanised)")),
+    comma: snip("Comma", "2.0.0", "comma", "    comma.restore(" + q("ok see you tmrw bye") + ")\n    " + c("\"Ok, see you tmrw. Bye!\"")),
+    comeback: snip("Comeback", "2.0.0", "comeback", "    comeback.replies(" + q("Thanks for your help") + ")\n    " + c("[You're welcome] [Anytime] …")),
+    gatekeeper: snip("Gatekeeper", "2.0.0", "gk", "    gk.isToxic(" + q("bhai tu toh kamaal hai") + ")  " + c("false")),
+    hideout: snip("Hideout", "2.0.0", "hideout", "    hideout.hide(" + q("UPI me: 98765 43210") + ")\n    " + c("\"UPI me: [PHONE]\"")),
+    chalk: snip("Chalk", "2.0.0", "chalk", "    chalk.guess(strokes)\n    " + c("[house 0.89, barn 0.06, church 0.01]")),
+    emotion: snip("Emotion", "2.0.0", "emotion", "    emotion.detect(" + q("Exam tomorrow and I remember nothing 😰") + ")\n    " + c("[nervousness 0.96] · NEGATIVE"))
   };
   var tabs = document.querySelectorAll(".tab");
   tabs.forEach(function (t) {
