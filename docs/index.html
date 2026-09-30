@@ -139,6 +139,40 @@
   .hero .lede { font-size: clamp(18px, 2.2vw, 22px); color: var(--text); max-width: 640px; margin: 0 auto; line-height: 1.55; }
   .hero .lede b { font-weight: 500; }
 
+  /* Hero demo: one model at a time, message in -> result out */
+  .demo { max-width: 640px; margin: 48px auto 0; text-align: left; }
+  .demo-card { background: var(--surface-2); border-radius: var(--radius-lg); padding: 20px 24px 28px; }
+  .demo-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .demo-model { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; color: var(--text-strong); }
+  .demo-model .ci { width: 28px; height: 28px; border-radius: 50%; background: var(--navy); display: flex; align-items: center; justify-content: center; flex: none; }
+  .demo-model span { color: var(--text-dim); font-weight: 400; }
+  .demo-top .pill { background: var(--surface); }
+  .demo-io { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px; min-height: 48px; font-size: 15px; }
+  .demo-io .flow { color: var(--text-dim); }
+  .demo-in { justify-self: end; max-width: 100%; }
+  .demo-in .bub { padding: 9px 14px; }
+  .demo-out { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; transition: opacity .3s ease, transform .3s ease; }
+  .demo-out .bub { padding: 9px 14px; }
+  .demo:not(.shown) .demo-out { opacity: 0; transform: translateX(-6px); }
+  .caret { display: inline-block; width: 1.5px; height: 1.05em; margin-left: 1px; background: var(--text); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+  .demo.shown .caret { display: none; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .demo-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 16px; }
+  .demo-tabs button {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-dim); background: none; border: 0; cursor: pointer;
+    padding: 6px 12px; border-radius: 96px; transition: background .15s, color .15s;
+  }
+  .demo-tabs button:hover { background: var(--tonal); color: var(--text); }
+  .demo-tabs button[aria-selected="true"] { background: var(--chip-on); color: var(--chip-on-text); }
+  @media (max-width: 560px) {
+    .demo-card { padding: 18px 16px 22px; }
+    .demo-top { flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 18px; }
+    .demo-io { grid-template-columns: 1fr; justify-items: center; gap: 10px; }
+    .demo-in { justify-self: center; }
+    .demo-io .flow { transform: rotate(90deg); }
+    .demo-out { justify-content: center; }
+  }
+
   /* Stat strip */
   .strip { padding: 8px 0 72px; }
   .strip-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -452,6 +486,21 @@
     <div class="hero-copy">
       <h1>Add AI to your app.<br>Skip the <span class="hl">server.</span></h1>
       <p class="lede">Tiny Kotlin Multiplatform models that run <b>inside your app</b>, on Android, iOS, desktop and the web. Offline. Private. Milliseconds.</p>
+    </div>
+
+    <div class="demo" id="demo">
+      <div class="demo-card">
+        <div class="demo-top">
+          <div class="demo-model"><span class="ci"><svg width="22" height="22"><use href="#fly"/></svg></span><b id="demo-name">Beacon</b><span id="demo-task">language detection</span></div>
+          <span class="pill" id="demo-ms">⚡ &lt;0.1 ms · offline</span>
+        </div>
+        <div class="demo-io" aria-live="polite">
+          <div class="demo-in"><div class="bub"><span id="demo-text">¿Vienes a cenar hoy?</span><i class="caret"></i></div></div>
+          <svg class="flow" width="22" height="12" aria-hidden="true"><use href="#flow"/></svg>
+          <div class="demo-out" id="demo-out"><span class="tag">ES</span><span>Spanish</span></div>
+        </div>
+      </div>
+      <div class="demo-tabs" role="tablist" aria-label="Pick a model"></div>
     </div>
   </div>
 </section>
@@ -840,6 +889,45 @@ implementation(<span class="s">"io.github.rajumark:moji:2.0.0"</span>)
 <script>
 (function () {
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Hero demo: types a message, then shows what one model does with it
+  var demo = document.getElementById("demo");
+  if (demo) {
+    var slides = [
+      { name: "Beacon", task: "language detection", ms: "&lt;0.1 ms", text: "¿Vienes a cenar hoy?", out: '<span class="tag">ES</span><span>Spanish</span>' },
+      { name: "Comma", task: "punctuation", ms: "~10 ms", text: "ok see you tmrw bye", out: '<div class="bub">Ok<span class="pn">,</span> see you tmrw<span class="pn">.</span> Bye<span class="pn">!</span></div>' },
+      { name: "Hideout", task: "personal info hiding", ms: "~10 ms", text: "Call me on 98765 43210", out: '<div class="bub">Call me on <span class="tag">PHONE</span></div>' },
+      { name: "Comeback", task: "smart replies", ms: "~0.5 ms", text: "Lunch at 1?", out: '<span class="chip">Sure!</span><span class="chip ghost">Make it 2?</span>' },
+      { name: "Moji", task: "emoji suggestions", ms: "~0.5 ms", text: "pizza tonight?", out: '<span class="chip emo">🍕</span><span class="chip emo ghost">😋</span><span class="chip emo ghost">🔥</span>' },
+      { name: "Emotion", task: "emotion detection", ms: "~4 ms", text: "Exam tomorrow 😰", out: '<span class="tag">NERVOUSNESS</span>' },
+      { name: "Gatekeeper", task: "toxicity detection", ms: "~1 ms", text: "gg, well played", out: '<span class="tag ghost">✓ CLEAN</span>' }
+    ];
+    var $ = function (id) { return document.getElementById(id); };
+    var tabsEl = demo.querySelector(".demo-tabs"), cur = 0, timer = null, auto = true;
+    slides.forEach(function (sl, i) {
+      var b = document.createElement("button");
+      b.type = "button"; b.setAttribute("role", "tab"); b.textContent = sl.name;
+      b.addEventListener("click", function () { auto = false; show(i); });
+      tabsEl.appendChild(b);
+    });
+    function show(i) {
+      clearTimeout(timer); cur = i;
+      var sl = slides[i], chars = Array.from(sl.text), n = 0;
+      tabsEl.querySelectorAll("button").forEach(function (b, k) { b.setAttribute("aria-selected", k === i); });
+      $("demo-name").textContent = sl.name; $("demo-task").textContent = sl.task;
+      $("demo-ms").innerHTML = "⚡ " + sl.ms + " · offline";
+      $("demo-out").innerHTML = sl.out;
+      demo.classList.remove("shown");
+      var next = function () { if (auto) timer = setTimeout(function () { show((cur + 1) % slides.length); }, 2600); };
+      if (reduce) { $("demo-text").textContent = sl.text; demo.classList.add("shown"); return next(); }
+      (function type() {
+        $("demo-text").textContent = chars.slice(0, n).join("");
+        if (n++ < chars.length) { timer = setTimeout(type, 45); return; }
+        timer = setTimeout(function () { demo.classList.add("shown"); next(); }, 250);
+      })();
+    }
+    show(0);
+  }
 
   // Copy buttons
   document.querySelectorAll("[data-copy]").forEach(function (b) {
