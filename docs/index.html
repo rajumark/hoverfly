@@ -442,6 +442,39 @@
     .js .reveal .d-bar i, .js .reveal .sh-bars i, .js .reveal .sq-small { transform: none; }
     .packet { display: none; }
   }
+
+  /* Creator note (same card as the library sites) */
+  .creator-card {
+    display: block; max-width: 880px; margin: 0 auto; padding: 56px 56px 40px; border-radius: 32px;
+    background: #073042; color: #e8eaed !important; text-decoration: none !important; position: relative; overflow: hidden;
+    transition: box-shadow .25s, transform .25s;
+  }
+  .creator-card::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(rgba(61, 220, 132, .16) 1.2px, transparent 1.3px); background-size: 26px 26px;
+    -webkit-mask-image: linear-gradient(135deg, transparent 45%, #000); mask-image: linear-gradient(135deg, transparent 45%, #000);
+  }
+  .creator-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(7, 48, 66, .35); }
+  .creator-kicker { position: relative; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #3ddc84; margin-bottom: 20px; }
+  .creator-kicker svg { width: 18px; height: 18px; }
+  .creator-quote { position: relative; margin: 0; font-size: clamp(28px, 4.4vw, 44px); font-weight: 600; line-height: 1.18; letter-spacing: -0.015em; color: #fff; }
+  .creator-quote mark { background: linear-gradient(transparent 62%, rgba(61, 220, 132, .55) 62%); color: inherit; }
+  .creator-sub { position: relative; margin: 18px 0 0; font-size: 18px; line-height: 1.55; color: #bdc1c6; max-width: 640px; }
+  .creator-sign { position: relative; display: flex; align-items: center; gap: 14px; margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, .14); flex-wrap: wrap; }
+  .creator-sign img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px #3ddc84; }
+  .creator-sign b { display: block; font-size: 17px; font-weight: 600; color: #fff; }
+  .creator-sign small { display: block; font-size: 14px; color: #bdc1c6; }
+  .creator-go {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 20px; border-radius: 96px;
+    background: #3ddc84; color: #073042; font-size: 15px; font-weight: 600; transition: gap .2s;
+  }
+  .creator-card:hover .creator-go { gap: 10px; }
+  @media (max-width: 640px) {
+    .creator-card { padding: 36px 24px 28px; border-radius: 24px; }
+    .creator-go { margin-left: 0; width: 100%; justify-content: center; }
+  }
+
+  .creator-card:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 </style>
 </head>
 <body>
@@ -854,6 +887,21 @@ implementation(<span class="s">"io.github.rajumark:moji:2.0.0"</span>)
       </div>
       <a class="btn" href="mailto:raju348636@gmail.com?subject=Custom%20on-device%20model">Get in touch →</a>
     </div>
+  </div>
+</section>
+
+<section class="section" id="creator" aria-label="A note from the creator">
+  <div class="wrap">
+  <a class="creator-card" href="https://rajumark.github.io/">
+    <div class="creator-kicker"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 4.3 2.4.7-1.3 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg> A note from the creator</div>
+    <p class="creator-quote">Built by a developer, <mark>for developers.</mark></p>
+    <p class="creator-sub">Every model here started as a problem I hit in my own apps. I made them small, private and free to start, so you can spend your time on the part your users will love.</p>
+    <div class="creator-sign">
+      <img src="https://rajumark.github.io/raju_profile_small_image.png" alt="" width="52" height="52" loading="lazy">
+      <div><b>Raju Shingadiya</b><small>Android developer · creator of Hoverfly</small></div>
+      <span class="creator-go">Meet the maker <span aria-hidden="true">→</span></span>
+    </div>
+  </a>
   </div>
 </section>
 </main>
